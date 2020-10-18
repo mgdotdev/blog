@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+  <id>http://lernfunk.de/media/654321</id>
+  <title>Michael's Blog</title>
+  <updated>2020-10-18T19:05:00.525239+00:00</updated>
+  <link href="https://1mikegrn.github.io/blog"/>
+  <link href="https://1mikegrn.github.io/blog/blog/atom.xml"/>
+  <generator uri="https://ablog.readthedocs.org" version="0.10.11">ABlog</generator>
+  <entry>
+    <id>https://1mikegrn.github.io/blog/posts/2020_9_6/</id>
+    <title>In Python, decorators are where it’s @</title>
+    <updated>2020-09-06T00:00:00-07:00</updated>
+    <author>
+      <name>Michael</name>
+    </author>
+    <content type="html">&lt;p&gt;The title of this post is a bit over hyped, predominately due to the fact that decorators fundamentally don’t add any extra functionality to the Python programming language. They do however provide an elegant protocol for a design pattern that occurs very often in Python. In this post, I’ll show you what that design pattern is, and how to use decorators for providing an elegant solution to these pattern instances.&lt;/p&gt;
+</content>
+    <link href="https://1mikegrn.github.io/blog/posts/2020_9_6/" rel="alternate"/>
+    <published>2020-09-06T00:00:00-07:00</published>
+  </entry>
+  <entry>
+    <id>https://1mikegrn.github.io/blog/posts/2020_10_16/</id>
+    <title>Python’s “with” keyword - in context</title>
+    <updated>2020-10-16T00:00:00-07:00</updated>
+    <author>
+      <name>Michael</name>
+    </author>
+    <content type="html">&lt;p&gt;In Python, everything is an object. To some this may be a tad cliche to repeat, but underneath this rather innocuous statement lies a paradigm that is indicative of every object that developers interact with in the Python programming language. This paradigm is the Python data model.&lt;/p&gt;
+</content>
+    <link href="https://1mikegrn.github.io/blog/posts/2020_10_16/" rel="alternate"/>
+    <published>2020-10-16T00:00:00-07:00</published>
+  </entry>
+</feed>

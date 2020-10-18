@@ -1,0 +1,480 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python’s “with” keyword - in context &#8212; Home  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../../about/" />
+    <link rel="index" title="Index" href="../../genindex/" />
+    <link rel="search" title="Search" href="../../search/" />
+  
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  
+  <link rel="alternate" type="application/atom+xml"  href="../../blog/atom.xml" title="Michael's Blog">
+  
+  
+  <style type="text/css">
+    ul.ablog-archive {list-style: none; overflow: auto; margin-left: 0px}
+    ul.ablog-archive li {float: left; margin-right: 5px; font-size: 80%}
+    ul.postlist a {font-style: italic;}
+    ul.postlist-style-disc {list-style-type: disc;}
+    ul.postlist-style-none {list-style-type: none;}
+    ul.postlist-style-circle {list-style-type: circle;}
+  </style>
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="python-s-with-keyword-in-context">
+<h1>Python’s “with” keyword - in context<a class="headerlink" href="#python-s-with-keyword-in-context" title="Permalink to this headline">¶</a></h1>
+<img alt="../../_images/context_manager.jpg" src="../../_images/context_manager.jpg" />
+<p>In Python, everything is an object. To some this may be a tad cliche to repeat, but underneath this rather innocuous statement lies a paradigm that is indicative of every object that developers interact with in the Python programming language. This paradigm is the Python data model.</p>
+<p>The Python data model provides developers an interface with which to hook into some of the core functionality of the Python programming language. The model provides an explicit API through which all Python objects can be interacted with. Knowing this model, and how to leverage it so to create our own hooks for customized object abstractions, is one of the core tenants of advanced Python programming.</p>
+<p>One of my favorite abstractions that demonstrates this data model paradigm is the context manager. Context managers are designed to enforce the execution of a set of protocols around the scope of a given block of code. Most commonly this is observed in the context of resource management, but in theory, the context manager can be applied to any block of code which requires an ‘enter and exit’ strategy to interact ‘with’.</p>
+<p>I’m choosing these words rather playfully, as the three elements which context managers require are the <code class="code docutils literal notranslate"><span class="pre">with</span></code> keyword, which invokes the context manager (CM for short), and then the <code class="code docutils literal notranslate"><span class="pre">__enter__()</span></code> and <code class="code docutils literal notranslate"><span class="pre">__exit__()</span></code> methods, which Python executes as the CM is entered and exited respectively. The result here is wrapping a very technical protocol into beautiful, idiomatic Python code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ContextManager</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;entering...&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;exiting...&#39;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">ContextManager</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;in context&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[]:</span> <span class="n">python</span> <span class="o">-</span><span class="n">u</span> <span class="n">d</span><span class="p">:</span>\<span class="n">programming</span>\<span class="n">sandbox</span>\<span class="n">contextmanager</span><span class="o">.</span><span class="n">py</span>
+<span class="n">Out</span><span class="p">[]:</span>
+
+<span class="n">entering</span><span class="o">...</span>
+<span class="ow">in</span> <span class="n">context</span>
+<span class="n">exiting</span><span class="o">...</span>
+</pre></div>
+</div>
+<p>As a quick point, CM methods emulate the functionality of a <code class="code docutils literal notranslate"><span class="pre">try</span></code>/<code class="code docutils literal notranslate"><span class="pre">finally</span></code> block, where the <code class="code docutils literal notranslate"><span class="pre">__exit__()</span></code> is called regardless of the state of the block inside the context manager. The encompassed error will still ultimately be thrown, but the benefit here is that we get the exit protocol to execute no matter the success or failure of the encompassed code block.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ContextManager</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;entering...&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;exiting...&#39;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">ContextManager</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[]:</span> <span class="n">python</span> <span class="o">-</span><span class="n">u</span> <span class="n">d</span><span class="p">:</span>\<span class="n">programming</span>\<span class="n">sandbox</span>\<span class="n">contextmanager</span><span class="o">.</span><span class="n">py</span>
+<span class="n">Out</span><span class="p">[]:</span>
+
+<span class="n">entering</span><span class="o">...</span>
+<span class="n">exiting</span><span class="o">...</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+<span class="n">File</span> <span class="s2">&quot;d:\programming\sandbox\contextmanager.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">9</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span>
+<span class="ne">ValueError</span>
+</pre></div>
+</div>
+<p>As I mentioned before, the most common examples of CMs come in the form of resource managers. Many resource-management objects in Python are by design context managers, built with the intent to abstract away from developers the need to incessantly call open, close, read, write, save, etc., over I/O resources that can be exclusively tethered to your Python instance during runtime. For example, <code class="code docutils literal notranslate"><span class="pre">open(path)</span></code> can be used as a CM, where in this case the CM handles the I/O setup and teardown protocols under the hood so that the developer doesn’t have to worry about resource management themselves.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;D:\Programming\csv_reader\this.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">writelines</span><span class="p">([</span><span class="s1">&#39;this</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;that</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;this and that</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">])</span>
+
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;D:\Programming\csv_reader\this.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+
+<span class="c1">### vs ###</span>
+
+<span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;D:\Programming\csv_reader\this.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="n">file</span><span class="o">.</span><span class="n">writelines</span><span class="p">([</span><span class="s1">&#39;this</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;that</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;this and that</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">])</span>
+<span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;D:\Programming\csv_reader\this.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+<span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="example-csvdb">
+<h2>Example: CSVdb<a class="headerlink" href="#example-csvdb" title="Permalink to this headline">¶</a></h2>
+<p>CSV files are ubiquitous in the realm of data science and analytics. They’re easy to generate and simple to send and receive. Oftentimes data in a CSV file will be arranged as a table, where a line of headers describe the subsequent columns of data in a file.</p>
+<p>The one major drawback to these types of CSV files however is that they’re row-oriented. We can easily read a row of text as a string from a CSV file via <code class="code docutils literal notranslate"><span class="pre">file.readline()</span></code>. However, as mentioned above, the data arrangement of CSV’s is commonly oriented by column. Yet, there’s no <code class="code docutils literal notranslate"><span class="pre">file.readcolumn()</span></code> method to be found! That’s annoying. Now, this may be a non-issue if we can simply read the entire thing into memory using something like <code class="code docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code>, but this is a non-starter if our hardware doesn’t have the necessary RAM to keep everything off-disk.</p>
+<p>For Python, a great yet simple solution to this problem is to read our CSV file into a relational database. Though unavailable as a CSV, in a relational db we have the option to read out our data by column. Python ships natively with a relational database module called <code class="code docutils literal notranslate"><span class="pre">sqlite3</span></code>, which, combined with Python’s CSV module, provides us with the necessary functionality for reading into python our data by column.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;D:\Programming\csv_reader\this.txt&#39;</span><span class="p">)</span>
+<span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+<span class="n">temp_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;temp.db&#39;</span><span class="p">))</span>
+<span class="n">sql</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="n">sql</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CREATE TABLE IF NOT EXISTS csv (</span>
+<span class="sd">    table_id INTEGER PRIMARY KEY,</span>
+<span class="sd">    {}</span>
+<span class="sd">    )</span>
+<span class="sd">    &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">h</span> <span class="o">+</span> <span class="s2">&quot; TEXT&quot;</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">])</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="n">sql</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span>
+    <span class="s2">&quot;INSERT INTO csv(</span><span class="si">{}</span><span class="s2">) VALUES(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">headers</span><span class="p">),</span>
+        <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;?&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">headers</span><span class="p">))])</span>
+    <span class="p">),</span> <span class="n">reader</span>
+<span class="p">)</span>
+<span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">target_header</span> <span class="o">=</span> <span class="n">headers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span>
+    <span class="s2">&quot;SELECT </span><span class="si">{}</span><span class="s2"> from csv&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">target_header</span><span class="p">),</span>
+    <span class="n">conn</span>
+<span class="p">)</span>
+
+<span class="n">series</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">target_header</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+<span class="n">sql</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">temp_dir</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>As we can see here, without reading the entire file into memory, we can push the contents of our CSV file into a relational database, and subsequently use SQL to read out a column of data from the <code class="code docutils literal notranslate"><span class="pre">.db</span></code> file into a pandas series.</p>
+<p>This is great start to our problem; but we can clean this up tremendously if we consider that, other than the <code class="code docutils literal notranslate"><span class="pre">target_header</span></code>, <code class="code docutils literal notranslate"><span class="pre">df</span></code>, and <code class="code docutils literal notranslate"><span class="pre">series</span></code> objects, everything else codified is simply setup and teardown protocol. I.E. we can generalize this protocol with a context manager.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+
+<span class="c1"># If CSV has a blank header (like for an index column)</span>
+<span class="c1"># we&#39;ll just give it a random one here since</span>
+<span class="c1"># headers in SQLite can&#39;t be blank</span>
+<span class="k">def</span> <span class="nf">string_generator</span><span class="p">(</span><span class="n">string_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">char</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">char</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="nb">chr</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">65</span><span class="p">,</span><span class="mi">90</span><span class="p">))</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">string_length</span><span class="p">)]</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">char</span> <span class="o">*</span> <span class="n">string_length</span>
+
+<span class="k">class</span> <span class="nc">CSVdb</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">input_file</span>
+
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;CSVdb&#39;</span><span class="p">:</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">x</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="n">string_generator</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">next</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;temp.db&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sql</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_execute_and_commit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_table</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executemany_and_commit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_insert_values</span><span class="p">(),</span> <span class="n">reader</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp_dir</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_filepath</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;CSVdb&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CSVdb</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+
+
+    <span class="k">def</span> <span class="nf">pull_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">header</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;header requested not in database&quot;</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span>
+            <span class="s2">&quot;SELECT </span><span class="si">{}</span><span class="s2"> from csv&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">header</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">header</span><span class="p">]</span>
+
+
+    <span class="k">def</span> <span class="nf">_create_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        CREATE TABLE IF NOT EXISTS csv (</span>
+<span class="s2">            table_id INTEGER PRIMARY KEY,</span>
+<span class="s2">            </span><span class="si">{}</span><span class="s2"></span>
+<span class="s2">        )</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">h</span> <span class="o">+</span> <span class="s2">&quot; TEXT&quot;</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">])</span>
+        <span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_insert_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            INSERT INTO csv(</span><span class="si">{}</span><span class="s2">) VALUES(</span><span class="si">{}</span><span class="s2">)</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">),</span>
+            <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;?&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">))])</span>
+        <span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_execute_and_commit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">_executemany_and_commit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>With this CSVdb class, we’ve completely abstracted away any interaction with the setup and teardown process of these file and directory objects. Instead of having to keep track of every I/O instance, we can simply call the context manager’s <code class="code docutils literal notranslate"><span class="pre">c.pull_column()</span></code> method so to extract the necessary column(s) of data within a <code class="code docutils literal notranslate"><span class="pre">with</span></code> block.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">CSVdb</span><span class="o">.</span><span class="n">from_filepath</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;D:\Database\csv\NOAA\california.csv&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+    <span class="n">series</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">pull_column</span><span class="p">(</span><span class="o">&lt;</span><span class="n">TARGET_HEADER</span><span class="o">&gt;</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">{</span><span class="n">h</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">pull_column</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">ITERABLE_TARGET_HEADERS</span><span class="o">&gt;</span><span class="p">}</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>The Python data model provides us developers with a powerful way to hook into some of the core functionality of the Python programming language. With these protocols, we have the capacity to create our own objects which can interact with the language at a more fundamental level. Here, we saw how the <code class="code docutils literal notranslate"><span class="pre">__enter__()</span></code> and <code class="code docutils literal notranslate"><span class="pre">__exit__()</span></code> methods allow us to hook into the context manager protocol, allowing us to abstract away the setup and teardown of I/O instances using the <code class="code docutils literal notranslate"><span class="pre">with</span></code> keyword. The result of this is beautiful, idiomatic Python code.</p>
+</div>
+</div>
+
+  <div class="section">
+  
+    
+
+
+<div class="section">
+  <span style="float: left;">
+  
+  Previous: 
+  <a href="../2020_9_6/">
+    
+    In Python, decorators are where it’s @
+  </a>
+  
+  </span>
+  <span>&nbsp;</span>
+  <span style="float: right;">
+  
+  </span>
+</div>
+
+  
+  
+  </div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../">Home</a></h1>
+
+
+
+
+
+
+
+
+
+  
+  
+  <h2>
+  
+  
+    16 October 2020
+  
+  </h2>
+
+  <ul>
+    
+
+  
+  <li id="author"><span>Author:</span>
+    
+      
+      <a href="../../blog/author/green/">Green</a>,
+      
+    
+      
+      <a href="../../blog/author/michael/">Michael</a>
+      
+    </li>
+  
+
+  
+  <li id="location"><span>Location:</span>
+    
+      
+      <a href="../../blog/location/california/">California</a>,
+      
+    
+      
+      <a href="../../blog/location/united-states/">United States</a>
+      
+    </li>
+  
+
+  
+
+  
+  <li id="category"><span>Category:</span>
+    
+      
+      <a href="../../blog/category/context-managers/">Context Managers</a>
+      
+    </li>
+  
+
+  
+  <li id="tags"><span>Tags:
+      </span>
+    
+      
+      <a href="../../blog/tag/python/">Python</a>
+      
+    
+      
+      <a href="../../blog/tag/context-managers/">context managers</a>
+      
+    </li>
+  
+  
+  </ul>
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://1mikegrn.github.io">1mikegrn.github.io</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://1mikegrn.github.io/blog/about">About</a></li>
+</ul>
+
+
+  <h3><a href="../../blog/">Recent Posts</a></h3>
+  <ul>
+    
+    
+      <li><a href="../2020_9_6/">06 September - In Python, decorators are where it’s @</a></li>
+    
+  </ul>
+
+  <h3><a href="../../blog/tag/">Tags</a></h3>
+  <style type="text/css">
+    ul.ablog-cloud {list-style: none; overflow: auto;}
+    ul.ablog-cloud li {float: left; height: 20pt; line-height: 18pt; margin-right: 5px;}
+    ul.ablog-cloud a {text-decoration: none; vertical-align: middle;}
+    li.ablog-cloud-1{font-size: 80%;}
+    li.ablog-cloud-2{font-size: 95%;}
+    li.ablog-cloud-3{font-size: 110%;}
+    li.ablog-cloud-4{font-size: 125%;}
+    li.ablog-cloud-5{font-size: 140%;}
+  </style>
+  <ul class="ablog-cloud">
+    
+      
+      <li class="ablog-cloud ablog-cloud-5">
+        <a href="../../blog/tag/python/">Python</a></li>
+      
+    
+      
+      <li class="ablog-cloud ablog-cloud-1">
+        <a href="../../blog/tag/context-managers/">context managers</a></li>
+      
+    
+      
+      <li class="ablog-cloud ablog-cloud-1">
+        <a href="../../blog/tag/decorators/">decorators</a></li>
+      
+    
+  </ul>
+
+  <h3><a href="../../blog/category/">Categories</a></h3>
+  <ul>
+  
+    
+    <li><a href="../../blog/category/context-managers/">Context Managers (1)</a></li>
+    
+  
+    
+    <li><a href="../../blog/category/decorators/">Decorators (1)</a></li>
+    
+  
+  </ul>
+
+  <h3><a href="../../blog/archive/">Archives</a></h3>
+  <ul>
+  
+    
+    <li><a href="../../blog/2020/">2020 (2)</a></li>
+    
+  
+  </ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search/" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Michael Green.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/posts/2020_10_16.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
