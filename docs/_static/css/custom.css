@@ -27,8 +27,28 @@ div.body {
         margin: 2%;
     }
     div.body {
-        position: center;
         margin: auto;
+    }
+}
+
+@media (min-width: 875px) {
+    div.sphinxsidebar {
+        font-family: 'Raleway';
+        background-color: rgb(20, 20, 20);
+        width: 320px;
+        position: fixed;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        height: 100%;
+        z-index: 1;
+        margin-left: 0px;
+    }
+}
+
+@media (max-width: 875px) {
+    div.sphinxsidebar {
+        float: left;
+        background-color: rgb(20, 20, 20);
     }
 }
 
@@ -53,18 +73,6 @@ div.body > .section > .section {
 
 div.sphinxsidebar a {
     color: #fff;
-}
-
-div.sphinxsidebar {
-    font-family: 'Raleway';
-    background-color: rgb(20, 20, 20);
-    width: 320px;
-    position: fixed;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    height: 100%;
-    z-index: 1;
-    margin-left: 0px;
 }
 
 div.sphinxsidebar h3, div.sphinxsidebar h4 {
@@ -105,6 +113,10 @@ div.sphinxsidebarwrapper {
 div.highlight pre {
     background-color: rgb(30,30,30);
     border: 1px solid #fff;
+}
+
+div.sphinxsidebar input {
+    font-family: 'Raleway';
 }
 
 input {
