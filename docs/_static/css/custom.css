@@ -19,6 +19,7 @@ div.body {
     margin-bottom: 5%;
     height: 100vh;
     max-width: 1000px;
+    min-width: 0px;
 }
 
 @media (max-width: 875px) {
@@ -28,7 +29,7 @@ div.body {
         overflow-y: auto;
     }
     div.body {
-        margin: auto;
+        margin: 2%;
     }
 }
 
