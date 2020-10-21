@@ -10,6 +10,7 @@ body, div.document, div.documentwrapper, div.bodywrapper {
     top: 0;
     margin: 0px;
     background-color: rgb(52, 52, 52);
+    display: inline-block;
 }
 
 div.body {
@@ -21,6 +22,8 @@ div.body {
     max-width: 1000px;
     min-width: 0px;
 }
+
+
 
 @media (max-width: 875px) {
     body {
