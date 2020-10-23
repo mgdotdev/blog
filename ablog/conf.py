@@ -354,6 +354,6 @@ html_css_files = [
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'MichaelsBlogdoc'
 
-blog_post_pattern = ["posts/*.rst", "posts/*.md"]
+blog_post_pattern = "posts/*.rst"
 
 ablog_website = '../docs'

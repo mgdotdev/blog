@@ -1,18 +1,20 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Iterating right along… &#8212; Home  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="author" title="About these documents" href="../../about/" />
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
@@ -48,12 +50,13 @@
             
   <div class="section" id="iterating-right-along">
 <h1>Iterating right along…<a class="headerlink" href="#iterating-right-along" title="Permalink to this headline">¶</a></h1>
-<p>Over the last few blog posts we’ve taken the time to discuss how to create various objects within the scope of the Python data model. To reiterate, the Python data model is a set of hooks which allow developers to construct objects which interact with some of the core functionality of the Python programming language. We’ve previously looked at how to build <code class="docutils literal notranslate"><span class="pre">__enter__()</span></code> and <code class="docutils literal notranslate"><span class="pre">__exit__()</span></code> strategies for use in context managers.</p>
+<img alt="../../_images/iterator.jpg" src="../../_images/iterator.jpg" />
+<p>Over the last few blog posts we’ve taken the time to discuss how to create various objects within the scope of the Python data model. To reiterate, the Python data model is a set of hooks which allow developers to construct objects which interact with some of the core functionality of the Python programming language. We’ve previously looked at how to build <code class="code docutils literal notranslate"><span class="pre">__enter__()</span></code> and <code class="code docutils literal notranslate"><span class="pre">__exit__()</span></code> strategies for use in context managers.</p>
 <p>For today’s post, we’re going to continue with these variations on a theme and look into building Iterators.</p>
-<div class="section" id="iterators-and-the-for-loop">
-<h2>Iterators and the <code class="docutils literal notranslate"><span class="pre">for</span></code> loop<a class="headerlink" href="#iterators-and-the-for-loop" title="Permalink to this headline">¶</a></h2>
-<p>Python is kind of a quirky language. It has many subtle differences that make it unique in terms of its implementation. One of these quirks that often goes unnoticed is how the <code class="docutils literal notranslate"><span class="pre">for</span></code> loop functions within Python.</p>
-<p>If you’ve ever done any programming in <code class="docutils literal notranslate"><span class="pre">C</span></code> or mostly any other C-style language, you’ll recognize that the basic <code class="docutils literal notranslate"><span class="pre">for</span></code> loop is constructed as the following:</p>
+<div class="section" id="iterators-as-the-for-loop">
+<h2>Iterators as the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop<a class="headerlink" href="#iterators-as-the-for-loop" title="Permalink to this headline">¶</a></h2>
+<p>Python is kind of a quirky language. It has many subtle differences that make it unique in terms of its implementation. One of these quirks that often goes unnoticed is how the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop functions within Python.</p>
+<p>If you’ve ever done any programming in <code class="code docutils literal notranslate"><span class="pre">C</span></code> or mostly any other C-style language, you’ll recognize that the basic <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop is constructed as the following:</p>
 <div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
         <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
@@ -61,23 +64,23 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>where in <code class="docutils literal notranslate"><span class="pre">C</span></code>, the <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">(</span> <span class="pre">)</span></code> syntax describes an initialization statement, a conditional statement, and an updating statement for the scope of the loop as it is executed.</p>
-<p>This mental model for the <code class="docutils literal notranslate"><span class="pre">for</span></code> loop here is pretty ubiquitous across many of the popular programming languages. However it is fundamentally incorrect when considering Python’s <code class="docutils literal notranslate"><span class="pre">for</span></code> loop protocol. As an example, the Python interpreter has no issue executing the following…</p>
+<p>where in <code class="code docutils literal notranslate"><span class="pre">C</span></code>, the <code class="code docutils literal notranslate"><span class="pre">for</span> <span class="pre">(</span> <span class="pre">)</span></code> syntax describes an initialization statement, a conditional statement, and an updating statement for the scope of the loop as it is executed.</p>
+<p>This mental model for the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop here is pretty ubiquitous across many of the popular programming languages. However it is fundamentally incorrect when considering Python’s <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop protocol. As an example, the Python interpreter has no issue executing the following…</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;this&#39;</span><span class="p">,</span> <span class="s1">&#39;that&#39;</span><span class="p">,</span> <span class="s1">&#39;wait we started with numbers why are we looping over strings now...&#39;</span><span class="p">]:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>…even though we clearly don’t have any initialization, conditional, or updating statements in this protocol.</p>
-<p>The difference here with the Python approach harks back to a comment we made in the <a class="reference external" href="https://1mikegrn.github.io/blog/posts/2020_10_16/">previous</a> blog post regarding Python objects. In Python, everything is an object. As such, the mental model for these <code class="docutils literal notranslate"><span class="pre">for</span></code> loops mirrors that mentality and is thus moreso of the form:</p>
+<p>The difference here with the Python approach harks back to a comment we made in the <a class="reference external" href="https://1mikegrn.github.io/blog/posts/2020_10_16/">previous</a> blog post regarding Python objects. In Python, everything is an object. As such, the mental model for these <code class="code docutils literal notranslate"><span class="pre">for</span></code> loops mirrors that mentality and is thus more so of the form:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="o">&lt;</span><span class="n">each</span> <span class="nb">object</span> <span class="n">x</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">container</span> <span class="nb">object</span><span class="o">&gt;</span><span class="p">:</span>
     <span class="n">use</span><span class="p">(</span><span class="o">&lt;</span><span class="n">each</span> <span class="nb">object</span> <span class="n">x</span><span class="o">&gt;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Where the <code class="docutils literal notranslate"><span class="pre">for</span></code> loop is iteratively calling each object <code class="docutils literal notranslate"><span class="pre">x</span></code> from a sequence of objects defined in a container which is iterable.</p>
+<p>Where the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop is iteratively calling each object <code class="code docutils literal notranslate"><span class="pre">x</span></code> from a sequence of objects defined in a container which is iterable.</p>
 </div>
 <div class="section" id="custom-iterables">
 <h2>Custom iterables<a class="headerlink" href="#custom-iterables" title="Permalink to this headline">¶</a></h2>
-<p>The Python data model provides two hooks which allow us to create custom iterables that hook into this iterator protocol; these hooks are <code class="docutils literal notranslate"><span class="pre">__iter__()</span></code> and <code class="docutils literal notranslate"><span class="pre">__next__()</span></code>. The <code class="docutils literal notranslate"><span class="pre">__iter__()</span></code> method returns the object which is the iterable (in this case, <code class="docutils literal notranslate"><span class="pre">self</span></code>). Iterable objects then contain a <code class="docutils literal notranslate"><span class="pre">__next__()</span></code> method, which the Python interpreter continuously calls as the iteration progresses, until <code class="docutils literal notranslate"><span class="pre">__next__()</span></code> raises a <code class="docutils literal notranslate"><span class="pre">StopIteration</span></code> exception. When this exception is raised, Python exits the iteration. If no <code class="docutils literal notranslate"><span class="pre">StopIteration</span></code> exception is raised, the object will continuously iterate (which can be useful in some contexts, but that’ll be for a later post).</p>
+<p>The Python data model provides two hooks which allow us to create custom iterables that hook into this iterator protocol; these hooks are <code class="code docutils literal notranslate"><span class="pre">__iter__()</span></code> and <code class="code docutils literal notranslate"><span class="pre">__next__()</span></code>. The <code class="code docutils literal notranslate"><span class="pre">__iter__()</span></code> method returns the object which is the iterable (in this case, <code class="code docutils literal notranslate"><span class="pre">self</span></code>). Iterable objects then contain a <code class="code docutils literal notranslate"><span class="pre">__next__()</span></code> method, which the Python interpreter continuously calls as the iteration progresses, until <code class="code docutils literal notranslate"><span class="pre">__next__()</span></code> raises a <code class="code docutils literal notranslate"><span class="pre">StopIteration</span></code> exception. When this exception is raised, Python exits the iteration. If no <code class="code docutils literal notranslate"><span class="pre">StopIteration</span></code> exception is raised, the object will continuously iterate (which can be useful in some contexts, but that’ll be for a later post).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CountByTwos</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">internal_value</span> <span class="o">=</span> <span class="n">start</span>
@@ -94,8 +97,8 @@
         <span class="k">return</span> <span class="n">snapshot</span>
 </pre></div>
 </div>
-<p>Consider the object above in the context of this iterator protocol. This <code class="docutils literal notranslate"><span class="pre">CountByTwos</span></code> object sets an internal value to the start value. The <code class="docutils literal notranslate"><span class="pre">__next__()</span></code> method takes a snapshot of this internal value, and raises <code class="docutils literal notranslate"><span class="pre">StopIteration</span></code> if the snapshot is greater than or equal to the stop value. If it isn’t, we’ll increment the internal value by twos, and finally return the snapshot value.</p>
-<p>As we would suspect, Iterating over this <code class="docutils literal notranslate"><span class="pre">CountByTwos</span></code> object results in a sequence of values between <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">stop</span></code> incremented by twos.</p>
+<p>Consider the object above in the context of this iterator protocol. This <code class="code docutils literal notranslate"><span class="pre">CountByTwos</span></code> object sets an internal value to the start value. The <code class="code docutils literal notranslate"><span class="pre">__next__()</span></code> method takes a snapshot of this internal value, and raises <code class="code docutils literal notranslate"><span class="pre">StopIteration</span></code> if the snapshot is greater than or equal to the stop value. If it isn’t, we’ll increment the internal value by twos, and finally return the snapshot value.</p>
+<p>As we would suspect, Iterating over this <code class="code docutils literal notranslate"><span class="pre">CountByTwos</span></code> object results in a sequence of values between <code class="code docutils literal notranslate"><span class="pre">start</span></code> and <code class="code docutils literal notranslate"><span class="pre">stop</span></code> incremented by twos.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">CountByTwos</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="mi">24</span><span class="p">)]</span>
 <span class="n">Out</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">]</span>
 </pre></div>
@@ -112,7 +115,7 @@
 </pre></div>
 </div>
 <p>With this iterator model in mind, we can now go ahead and create the iterators necessary for solving this problem. Now, since the goal of this post is to demonstrate iterators, I’m going to explicitly stick to using the iterator protocol for addressing this problem - the solution to this problem would certainly be simpler if we were to also use generators in our solution (and to be fair, generators <em>are</em> iterators), but I want to save generators for a future post. So given that, we’ll start by creating the iterator for the inner loop, and work our way outward.</p>
-<p>The trick here is going to be creating a file iterator which allows us to skip reading the first line depending on whether or not we want the headers returned. We only want the header from a single file - all other header reads will be redundant. We can do this by initializing the FileIterator with a headers boolean, where if it’s false, we’ll invoke the <code class="docutils literal notranslate"><span class="pre">next()</span></code> call over the file object so to skip to the second line of the file (which means yes, <code class="docutils literal notranslate"><span class="pre">open()</span></code> acts also as an iterator).</p>
+<p>The trick here is going to be creating a file iterator which allows us to skip reading the first line depending on whether or not we want the headers returned. We only want the header from a single file - all other header reads will be redundant. We can do this by initializing the FileIterator with a headers boolean, where if it’s false, we’ll invoke the <code class="code docutils literal notranslate"><span class="pre">next()</span></code> call over the file object so to skip to the second line of the file (which means yes, <code class="code docutils literal notranslate"><span class="pre">open()</span></code> acts also as an iterator).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TextIO</span>
 
 <span class="k">class</span> <span class="nc">FileIterator</span><span class="p">:</span>
@@ -136,8 +139,8 @@
         <span class="k">return</span> <span class="n">FileIterator</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">header</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Another benefit of this implementation is that it’s more memory efficient. Instead of reading an entire file into memory before operating on its contents, we’re breaking it up into ‘chunks’ of data that are being operated on sequentially. As we saw in a <a class="reference external" href="https://1mikegrn.github.io/blog/posts/2020_10_16/">previous post</a> we used <code class="docutils literal notranslate"><span class="pre">csv.reader</span></code> as an iterator so to avoid similar memory issues.</p>
-<p>Now that we have an object which can iterate over an individual file, let’s turn our focus to creating an object which can iterate over a collection of these FileIterators. Within this FileManager object we’ll set a <code class="docutils literal notranslate"><span class="pre">self.header</span></code> value which is initialized as <code class="docutils literal notranslate"><span class="pre">True</span></code> and passed to the <code class="docutils literal notranslate"><span class="pre">FileIterator</span></code> on the <code class="docutils literal notranslate"><span class="pre">FileManager</span></code>’s first pass. but once this occurs, we’ll flip it to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that future iterations invoke the <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">not</span> <span class="pre">header</span></code> protocol within the <code class="docutils literal notranslate"><span class="pre">FileIterator</span></code>.</p>
+<p>Another benefit of this implementation is that it’s more memory efficient. Instead of reading an entire file into memory before operating on its contents, we’re breaking it up into ‘chunks’ of data that are being operated on sequentially. As we saw in a <a class="reference external" href="https://1mikegrn.github.io/blog/posts/2020_10_16/">previous post</a> <code class="code docutils literal notranslate"><span class="pre">csv.reader</span></code> as an iterator so to avoid similar memory issues.</p>
+<p>Now that we have an object which can iterate over an individual file, let’s turn our focus to creating an object which can iterate over a collection of these FileIterators. Within this FileManager object we’ll set a <code class="code docutils literal notranslate"><span class="pre">self.header</span></code> value which is initialized as <code class="code docutils literal notranslate"><span class="pre">True</span></code> and passed to the <code class="code docutils literal notranslate"><span class="pre">FileIterator</span></code> on the <code class="code docutils literal notranslate"><span class="pre">FileManager</span></code>’s first pass. but once this occurs, we’ll flip it to <code class="code docutils literal notranslate"><span class="pre">False</span></code> so that future iterations invoke the <code class="code docutils literal notranslate"><span class="pre">if</span> <span class="pre">not</span> <span class="pre">header</span></code> protocol within the <code class="code docutils literal notranslate"><span class="pre">FileIterator</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">csv</span>
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
@@ -169,7 +172,7 @@
         <span class="p">)</span>
 </pre></div>
 </div>
-<p>Now that we have our iterators, executing the overall protocol is as simple as calling the <code class="docutils literal notranslate"><span class="pre">FileManager</span></code> and <code class="docutils literal notranslate"><span class="pre">FileIterator</span></code>s from within a pair of <code class="docutils literal notranslate"><span class="pre">for</span></code> loops. We can do this within the scope of an <code class="docutils literal notranslate"><span class="pre">open()</span></code> context manager so to write the result of the iterables to the opened file.</p>
+<p>Now that we have our iterators, executing the overall protocol is as simple as calling the <code class="code docutils literal notranslate"><span class="pre">FileManager</span></code> and <code class="code docutils literal notranslate"><span class="pre">FileIterator`s</span> <span class="pre">from</span> <span class="pre">within</span> <span class="pre">a</span> <span class="pre">pair</span> <span class="pre">of</span> <span class="pre">:code:`for</span></code> loops. We can do this within the scope of an <code class="code docutils literal notranslate"><span class="pre">open()</span></code> context manager so to write the result of the iterables to the opened file.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;D:\Programming\ZZ_Sandbox\file_iterator\test.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">FileManager</span><span class="o">.</span><span class="n">from_directory</span><span class="p">(</span>
         <span class="sa">r</span><span class="s1">&#39;D:\Programming\ZZ_Sandbox\file_iterator&#39;</span><span class="p">,</span> <span class="s1">&#39;.csv&#39;</span>
@@ -181,7 +184,7 @@
 </div>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
-<p>The iterator protocol provides Python developers with the ability to precisely control objects in sequence. By hooking into this iterator protocol using <code class="docutils literal notranslate"><span class="pre">__iter__()</span></code> and <code class="docutils literal notranslate"><span class="pre">__next__()</span></code>, we can create our own iterables with customized sequences. Here, we showed how to implement these <code class="docutils literal notranslate"><span class="pre">__iter__()</span></code> and <code class="docutils literal notranslate"><span class="pre">__next__()</span></code> methods within our own iterables, so to control how file data was read and written in a memory-efficient manner.</p>
+<p>The iterator protocol provides Python developers with the ability to precisely control objects in sequence. By hooking into this iterator protocol using <code class="code docutils literal notranslate"><span class="pre">__iter__()</span></code> and <code class="code docutils literal notranslate"><span class="pre">__next__()</span></code>, we can create our own iterables with customized sequences. Here, we showed how to implement these <code class="code docutils literal notranslate"><span class="pre">__iter__()</span></code> and <code class="code docutils literal notranslate"><span class="pre">__next__()</span></code> methods within our own iterables, so to control how file data was read and written in a memory-efficient manner.</p>
 </div>
 </div>
 
@@ -373,7 +376,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -382,11 +385,11 @@
       &copy;2020, Michael Green.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="../../_sources/posts/2020_10_23.md.txt"
+      <a href="../../_sources/posts/2020_10_23.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
