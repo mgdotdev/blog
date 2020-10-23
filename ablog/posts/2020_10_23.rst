@@ -122,7 +122,7 @@ The trick here is going to be creating a file iterator which allows us to skip r
         def from_filepath(path: str, header: bool) -> object:
             return FileIterator(open(path), header)
 
-Another benefit of this implementation is that it's more memory efficient. Instead of reading an entire file into memory before operating on its contents, we're breaking it up into 'chunks' of data that are being operated on sequentially. As we saw in a `previous post <https://1mikegrn.github.io/blog/posts/2020_10_16/>`_ :code:`csv.reader` as an iterator so to avoid similar memory issues.
+Another benefit of this implementation is that it's more memory efficient. Instead of reading an entire file into memory before operating on its contents, we're breaking it up into 'chunks' of data that are being operated on sequentially. This is similar to what we saw in a `previous <https://1mikegrn.github.io/blog/posts/2020_10_16/>`_ post where we used :code:`csv.reader` as an iterator so to avoid similar memory issues.
 
 Now that we have an object which can iterate over an individual file, let's turn our focus to creating an object which can iterate over a collection of these FileIterators. Within this FileManager object we'll set a :code:`self.header` value which is initialized as :code:`True` and passed to the :code:`FileIterator` on the :code:`FileManager`'s first pass. but once this occurs, we'll flip it to :code:`False` so that future iterations invoke the :code:`if not header` protocol within the :code:`FileIterator`.
 
@@ -158,7 +158,7 @@ Now that we have an object which can iterate over an individual file, let's turn
                 glob.glob(os.path.join(file_dir, "**"+ext))
             )
 
-Now that we have our iterators, executing the overall protocol is as simple as calling the :code:`FileManager` and :code:`FileIterator`s from within a pair of :code:`for` loops. We can do this within the scope of an :code:`open()` context manager so to write the result of the iterables to the opened file.
+Now that we have our iterators, executing the overall protocol is as simple as calling the :code:`FileManager` and :code:`FileIterator`'s from within a pair of :code:`for` loops. We can do this within the scope of an :code:`open()` context manager so to write the result of the iterables to the opened file.
 
 .. code-block:: python
 
