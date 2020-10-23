@@ -53,8 +53,8 @@
 <img alt="../../_images/iterator.jpg" src="../../_images/iterator.jpg" />
 <p>Over the last few blog posts we’ve taken the time to discuss how to create various objects within the scope of the Python data model. To reiterate, the Python data model is a set of hooks which allow developers to construct objects which interact with some of the core functionality of the Python programming language. We’ve previously looked at how to build <code class="code docutils literal notranslate"><span class="pre">__enter__()</span></code> and <code class="code docutils literal notranslate"><span class="pre">__exit__()</span></code> strategies for use in context managers.</p>
 <p>For today’s post, we’re going to continue with these variations on a theme and look into building Iterators.</p>
-<div class="section" id="iterators-as-the-for-loop">
-<h2>Iterators as the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop<a class="headerlink" href="#iterators-as-the-for-loop" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="iterators-and-the-for-loop">
+<h2>Iterators and the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop<a class="headerlink" href="#iterators-and-the-for-loop" title="Permalink to this headline">¶</a></h2>
 <p>Python is kind of a quirky language. It has many subtle differences that make it unique in terms of its implementation. One of these quirks that often goes unnoticed is how the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop functions within Python.</p>
 <p>If you’ve ever done any programming in <code class="code docutils literal notranslate"><span class="pre">C</span></code> or mostly any other C-style language, you’ll recognize that the basic <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop is constructed as the following:</p>
 <div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>

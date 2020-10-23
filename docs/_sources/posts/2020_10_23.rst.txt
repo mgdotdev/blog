@@ -14,8 +14,8 @@ Over the last few blog posts we've taken the time to discuss how to create vario
 
 For today's post, we're going to continue with these variations on a theme and look into building Iterators.
 
-Iterators as the :code:`for` loop
----------------------------------
+Iterators and the :code:`for` loop
+----------------------------------
 
 Python is kind of a quirky language. It has many subtle differences that make it unique in terms of its implementation. One of these quirks that often goes unnoticed is how the :code:`for` loop functions within Python.
 
