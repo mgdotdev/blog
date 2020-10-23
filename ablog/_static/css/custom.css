@@ -23,8 +23,6 @@ div.body {
     min-width: 0px;
 }
 
-
-
 @media (max-width: 875px) {
     body {
         padding: 0px;
@@ -165,8 +163,6 @@ div.body h1, h1 {
     font-size: 45px;
 }
 
-
-
 #michael-green-s-blog p {
     font-size: 20px;
 }
@@ -174,6 +170,10 @@ div.body h1, h1 {
 .rst-content .section ul li {
     margin-bottom: 60px;
     text-align: justify;
+}
+
+li > p:last-child {
+    margin-bottom: 20px;
 }
 
 p {
@@ -226,7 +226,7 @@ h1 {
     font-size: 16px;
 }
 
-.highlight .k, .highlight .kc, .highlight .kn, .highlight .se, .highlight .ow {
+.highlight .k, .highlight .kt, .highlight .kc, .highlight .kn, .highlight .se, .highlight .ow {
     color: rgb(204, 120, 50);
 }
 
@@ -262,7 +262,7 @@ h1 {
     color: rgb(165, 194, 97)
 }
 
-.code {
+code, .code {
     background-color: transparent;
     border: 2px;
     font-size: 14px;

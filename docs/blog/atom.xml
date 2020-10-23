@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
   <id>http://lernfunk.de/media/654321</id>
   <title>Michael's Blog</title>
-  <updated>2020-10-21T01:38:54.945650+00:00</updated>
+  <updated>2020-10-23T13:46:53.039211+00:00</updated>
   <link href="https://1mikegrn.github.io/blog"/>
   <link href="https://1mikegrn.github.io/blog/blog/atom.xml"/>
   <generator uri="https://ablog.readthedocs.org" version="0.10.11">ABlog</generator>
@@ -29,5 +29,17 @@
 </content>
     <link href="https://1mikegrn.github.io/blog/posts/2020_10_16/" rel="alternate"/>
     <published>2020-10-16T00:00:00-07:00</published>
+  </entry>
+  <entry>
+    <id>https://1mikegrn.github.io/blog/posts/2020_10_23/</id>
+    <title>Iterating right along…</title>
+    <updated>2020-10-23T00:00:00-07:00</updated>
+    <author>
+      <name>Michael Green</name>
+    </author>
+    <content type="html">&lt;p&gt;Over the last few blog posts we’ve taken the time to discuss how to create various objects within the scope of the Python data model. To reiterate, the Python data model is a set of hooks which allow developers to construct objects which interact with some of the core functionality of the Python programming language. We’ve previously looked at how to build &lt;code class="docutils literal notranslate"&gt;&lt;span class="pre"&gt;__enter__()&lt;/span&gt;&lt;/code&gt; and &lt;code class="docutils literal notranslate"&gt;&lt;span class="pre"&gt;__exit__()&lt;/span&gt;&lt;/code&gt; strategies for use in context managers.&lt;/p&gt;
+</content>
+    <link href="https://1mikegrn.github.io/blog/posts/2020_10_23/" rel="alternate"/>
+    <published>2020-10-23T00:00:00-07:00</published>
   </entry>
 </feed>
