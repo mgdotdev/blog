@@ -1,7 +1,7 @@
 .. post:: 16 Oct, 2020
    :tags: Python, context managers
    :category: Context Managers
-   :author: Green, Michael
+   :author: Michael Green
    :location: California, United States
 
 ====================================

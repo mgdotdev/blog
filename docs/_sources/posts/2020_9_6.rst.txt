@@ -1,7 +1,7 @@
 .. post:: 6 Sept, 2020
    :tags: Python, decorators
    :category: Decorators
-   :author: Green, Michael
+   :author: Michael Green
    :location: California, United States
 
 ======================================
