@@ -1,0 +1,67 @@
+.. post:: 31 Oct, 2020
+   :tags: Python, Generators
+   :category: Iterators
+   :author: Michael Green
+   :location: California, United States
+
+=========================
+Generating more Iterators
+=========================
+
+.. image:: ../images/generator.jpg
+
+In our `previous <https://1mikegrn.github.io/blog/posts/2020_10_23/>`_ blog post, we spent some time discussing the iterator protocol and how we can build custom objects which hook into the :code:`for` loop syntax of the Python programming language. Today, we're going to continue in discussing iterators by looking into a specific sub-class of iterators called *generators*.
+
+:code:`yield` to generators
+---------------------------
+
+Like iterators, generators use the :code:`__next__()` protocol for iteratively yielding method and function results. The difference between the two objects however is in their construction. Instead of creating a :code:`__next__()` method in a class, we only need to call :code:`yield` in place of a typical :code:`return` call so to create a generator. This simplified syntax allows us to apply the iterator protocol to both class methods, and functions.
+
+As a simple example, let's go ahead and look at the :code:`CountByTwos` object we created last week and refactor it into a generator. To recap, our :code:`CountByTwos` object hooked into the iterator protocol by instantiating the methods :code:`__iter__()` and :code:`___next__()`.
+
+.. code-block:: python
+
+   class CountByTwos:
+      def __init__(self, start, stop):
+         self.internal_value = start
+         self.stop = stop
+
+      def __iter__(self):
+         return self
+
+      def __next__(self):
+         snapshot = self.internal_value
+         if snapshot >= self.stop:
+               raise StopIteration
+         self.internal_value += 2
+         return snapshot
+
+   In [1]: [x for x in CountByTwos(start=4, stop=24)]
+   Out[1]: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
+
+With generators, we hook into this same protocol. However, the methods :code:`__iter__()` and :code:`___next__()` instead map to the generator's instantiation and the keyword :code:`yield`. So as a generator function, we can refactor :code:`CountByTwos` to the following.
+
+.. code-block:: python
+
+   def count_by_twos(start, stop):
+      internal_value = start
+      while True:
+         yield internal_value
+         internal_value += 2
+         if internal_value >= stop:
+               return StopIteration
+
+   In [2]: [x for x in count_by_twos(start=4, stop=24)]
+   Out[2]: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
+
+As we can see, the generator function and the Iterator class object contain many of the same ideas. They're both instantiated, they both can be called via :code:`next()` and both iteratively return results to the user until a :code:`StopIteration` is encountered.
+
+.. code-block:: python
+
+   In [3]: a, b = CountByTwos(start=4,stop=24), count_by_twos(start=4,stop=24)
+
+   In [4]: next(a), next(b)
+   Out[4]: (4, 4)
+
+   In [5]: next(a), next(b)
+   Out[5]: (6, 6)
