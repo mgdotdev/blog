@@ -54,14 +54,113 @@ With generators, we hook into this same protocol. However, the methods :code:`__
    In [2]: [x for x in count_by_twos(start=4, stop=24)]
    Out[2]: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
 
-As we can see, the generator function and the Iterator class object contain many of the same ideas. They're both instantiated, they both can be called via :code:`next()` and both iteratively return results to the user until a :code:`StopIteration` is encountered.
+As we can see, the generator function and the Iterator class object contain many of the same ideas. They're both instantiated, they both can be called via :code:`next(obj)`/:code:`obj.__next__()` and both iteratively return results to the user until a :code:`StopIteration` is encountered.
 
 .. code-block:: python
 
-   In [3]: a, b = CountByTwos(start=4,stop=24), count_by_twos(start=4,stop=24)
+   In [3]: a, b = (
+      CountByTwos(start=4,stop=8), 
+      count_by_twos(start=4,stop=8)
+   )
 
    In [4]: next(a), next(b)
    Out[4]: (4, 4)
 
-   In [5]: next(a), next(b)
+   In [5]: a.__next__(), b.__next__()
    Out[5]: (6, 6)
+
+   In [6]: next(a)
+   Out[6]: StopIteration                             
+   Traceback (most recent call last)
+   <ipython-input-28-15841f3f11d4> in <module>
+   ----> 1 next(a)
+
+   D:\Programming\ZZ_Sandbox\file_iterator.py in __next__(self)
+       146         snapshot = self.internal_value
+       147         if snapshot >= self.stop:
+   --> 148             raise StopIteration
+       149         self.internal_value += 2
+       150         return snapshot
+
+   StopIteration:
+
+   In [7]: next(b)
+   Out[7]: StopIteration                             
+   Traceback (most recent call last)
+   <ipython-input-29-adb3e17b0219> in <module>
+   ----> 1 next(b)
+
+   StopIteration:
+
+With generators, the :code:`StopIteration` is passed implicitly by finishing all :code:`yield` keywords. Once the generator executes all it's containing yield statements, a subsequent :code:`next()` call will return the :code:`StopIteration` and either error out or terminate the :code:`for` loop protocol.
+
+.. code-block:: python
+
+   def count_by_twos(start, stop):
+      internal_value = start
+      while internal_value < stop:
+         yield internal_value
+         internal_value += 2
+
+   In [8]: [x for x in count_by_twos(start=4, stop=24)]
+   Out[8]: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
+
+Example: CSV concatenation (part 2)
+-----------------------------------
+
+As a core library developer, I'm always looking for ease-of-use optimizations that allow the tools I develop to be used as seemlessly as possible. From last week's blog, we created a set of objects that would allow a user to concatenate a set of CSV files into a single CSV file. The protocol for using these objects looked like the following, where we sucessively called each iterator in a nested for loop so to write the CSV contents line-by-line to the resulting file.
+
+.. code-block:: python
+
+   with open(r'D:\Programming\ZZ_Sandbox\file_iterator\test.txt', 'w') as f:
+      for file in FileManager.from_directory(
+         r'D:\Programming\ZZ_Sandbox\file_iterator', '.csv'
+      ):
+         for row in file:
+               f.write(row)
+
+Now, the result perfectly functional. However from a user experience perspective the interface is rather clunky - interacting with two objects in this explicit manner so to accomplish a single task in my opinion is undesireable. We can make use of the more flexible generator paradigm so to wrap the functionality of the :code:`FileIterator` into a method of the :code:`FileManager`.
+
+.. code-block:: python
+
+   import glob
+   import os.path
+
+
+   class CSVcat:
+      def __init__(self, files: list) -> None:
+         self.files = files
+         with open(self.files[0]) as f:
+               self.headers = f.readline()
+         self.file_generator = self._file_generator()
+
+      def __iter__(self):
+         return self
+
+      def __next__(self):
+         return next(self.file_generator)
+
+      def _file_generator(self) -> str:
+         yield self.headers
+         for file in self.files:
+               f = open(file)
+               next(f)
+               for row in f:
+                  yield row
+
+      @staticmethod
+      def from_directory(file_dir: str, ext: str) -> 'CSVcat':
+         return CSVcat(glob.glob(os.path.join(file_dir, "**"+ext)))
+
+With this new object, we've wrapped the functionality of the FileIterator into a generator method. We're using the :code:`__init__()` method of the :code:`CSVcat` object to instantiate the generator method within the class instance, as well as extract the header information from one of the files. :code:`CSVcat.__next__()` calls the generator's :code:`__next__()` method, which iteratively calls the generator as :code:`CSVcat` is iterated over. With the added flexibility provided by the :code:`yield` keyword, we can fluently handle yielding the :code:`self.headers` row, as well yielding only the data rows as the list of files is iterated over. The result of this is that we can execute the entire protocol in a single for loop.
+
+.. code-block:: python
+
+   with open(r'D:\Programming\ZZ_Sandbox\file_iterator\test.txt', 'w') as f:
+      for row in FileManager.from_directory(r'D:\Programming\ZZ_Sandbox\file_iterator', '.csv'):
+         f.write(row)
+
+Summary
+-------
+
+The iterator protocol is a powerful tool that Python developers can leverage for efficient data processing. Both iterators and generators provide us with a set of unique means for cusomizing our solutions. Here, we've used both models to hook into the :code:`for` loop syntax of Python, allowing us to fluently process a high volume of data without having to worry about memory overload.
