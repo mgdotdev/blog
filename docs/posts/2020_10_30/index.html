@@ -50,7 +50,7 @@
   <div class="section" id="yielding-generators">
 <h1>Yielding Generators<a class="headerlink" href="#yielding-generators" title="Permalink to this headline">¶</a></h1>
 <img alt="../../_images/generator.jpg" src="../../_images/generator.jpg" />
-<p>In our <a class="reference external" href="https://1mikegrn.github.io/blog/posts/2020_10_23/">previous</a> blog post, we spent some time discussing the iterator protocol and how we can build custom objects which hook into the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop syntax of the Python programming language. Today, we’re going to continue discussing iterators by looking into a specific sub-class of these objects, called <em>generators</em>. We’ll see how generators provide us convienience and flexibility when it comes to hooking into the iterator protocol.</p>
+<p>In our <a class="reference external" href="https://1mikegrn.github.io/blog/posts/2020_10_23/">previous</a> blog post, we spent some time discussing the iterator protocol and how we can build custom objects which hook into the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop syntax of the Python programming language. Today, we’re going to continue discussing iterators by looking into a specific sub-class of these objects, called <em>generators</em>. We’ll see how generators provide us convenience and flexibility when it comes to hooking into the iterator protocol.</p>
 <div class="section" id="generators-next-vs-yield">
 <h2>Generators: <code class="code docutils literal notranslate"><span class="pre">__next__()</span></code> vs <code class="code docutils literal notranslate"><span class="pre">yield</span></code><a class="headerlink" href="#generators-next-vs-yield" title="Permalink to this headline">¶</a></h2>
 <p>Like iterators, generators use the iterator protocol for iteratively yielding method and function results. The difference between the two objects however is in their construction. Instead of creating a <code class="code docutils literal notranslate"><span class="pre">__next__()</span></code> method in a class, we only need to call <code class="code docutils literal notranslate"><span class="pre">yield</span></code> in place of a typical <code class="code docutils literal notranslate"><span class="pre">return</span></code> call so to create a generator. This simplified syntax allows us to apply the iterator protocol to both class methods and functions with a high degree of flexibility.</p>
@@ -137,7 +137,7 @@
 </div>
 <div class="section" id="example-csv-concatenation-part-2">
 <h2>Example: CSV concatenation (part 2)<a class="headerlink" href="#example-csv-concatenation-part-2" title="Permalink to this headline">¶</a></h2>
-<p>As a core library developer, I’m always looking for ease-of-use optimizations that allow the tools I develop to be used as seemlessly as possible. From last week’s blog, we created a set of objects that would allow a user to concatenate a set of CSV files into a single CSV file. The protocol for using these objects looked like the following, where we sucessively called each iterator within nested for loops so to write the CSV contents line-by-line to the resulting file.</p>
+<p>As a core library developer, I’m always looking for ease-of-use optimizations that allow the tools I develop to be used as seamlessly as possible. From last week’s blog, we created a set of objects that would allow a user to concatenate a set of CSV files into a single CSV file. The protocol for using these objects looked like the following, where we successively called each iterator within nested for loops so to write the CSV contents line-by-line to the resulting file.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;D:\Programming\ZZ_Sandbox\file_iterator\test.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">FileManager</span><span class="o">.</span><span class="n">from_directory</span><span class="p">(</span>
       <span class="sa">r</span><span class="s1">&#39;D:\Programming\ZZ_Sandbox\file_iterator&#39;</span><span class="p">,</span> <span class="s1">&#39;.csv&#39;</span>
@@ -186,7 +186,7 @@
 </div>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
-<p>The iterator protocol is a powerful tool that Python developers can leverage for efficient data processing. Both iterators and generators provide us with a set of unique means for cusomizing our solutions. Here, we’ve used both models to hook into the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop syntax of Python, allowing us to fluently process a high volume of data without having to worry about memory overload.</p>
+<p>The iterator protocol is a powerful tool that Python developers can leverage for efficient data processing. Both iterators and generators provide us with a set of unique means for customizing our solutions. Here, we’ve used both models to hook into the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop syntax of Python, allowing us to fluently process a high volume of data without having to worry about memory overload.</p>
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><br /></div>
@@ -195,7 +195,7 @@
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><em>If you enjoyed this post, be sure to</em> <a class="reference external" href="https://www.linkedin.com/in/1mikegrn/">follow</a> <em>me on LinkedIn, where I’ll be posting more content regularly. You can find previous content at my blog’s webiste,</em> <a class="reference external" href="https://1mikegrn.github.io/blog">1mikegrn.github.io/blog</a></p>
+<p><em>If you enjoyed this post, be sure to</em> <a class="reference external" href="https://www.linkedin.com/in/1mikegrn/">follow</a> <em>me on LinkedIn, where I’ll be posting more content regularly. You can find previous content at my blog’s website,</em> <a class="reference external" href="https://1mikegrn.github.io/blog">1mikegrn.github.io/blog</a></p>
 </div>
 </div>
 </div>

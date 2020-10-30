@@ -10,7 +10,7 @@ Yielding Generators
 
 .. image:: ../images/generator.jpg
 
-In our `previous <https://1mikegrn.github.io/blog/posts/2020_10_23/>`_ blog post, we spent some time discussing the iterator protocol and how we can build custom objects which hook into the :code:`for` loop syntax of the Python programming language. Today, we're going to continue discussing iterators by looking into a specific sub-class of these objects, called *generators*. We'll see how generators provide us convienience and flexibility when it comes to hooking into the iterator protocol. 
+In our `previous <https://1mikegrn.github.io/blog/posts/2020_10_23/>`_ blog post, we spent some time discussing the iterator protocol and how we can build custom objects which hook into the :code:`for` loop syntax of the Python programming language. Today, we're going to continue discussing iterators by looking into a specific sub-class of these objects, called *generators*. We'll see how generators provide us convenience and flexibility when it comes to hooking into the iterator protocol.
 
 Generators: :code:`__next__()` vs :code:`yield`
 -----------------------------------------------
@@ -108,7 +108,7 @@ With generators, the :code:`StopIteration` can be passed implicitly by finishing
 Example: CSV concatenation (part 2)
 -----------------------------------
 
-As a core library developer, I'm always looking for ease-of-use optimizations that allow the tools I develop to be used as seemlessly as possible. From last week's blog, we created a set of objects that would allow a user to concatenate a set of CSV files into a single CSV file. The protocol for using these objects looked like the following, where we sucessively called each iterator within nested for loops so to write the CSV contents line-by-line to the resulting file.
+As a core library developer, I'm always looking for ease-of-use optimizations that allow the tools I develop to be used as seamlessly as possible. From last week's blog, we created a set of objects that would allow a user to concatenate a set of CSV files into a single CSV file. The protocol for using these objects looked like the following, where we successively called each iterator within nested for loops so to write the CSV contents line-by-line to the resulting file.
 
 .. code-block:: python
 
@@ -163,7 +163,7 @@ With this new object, we've wrapped the functionality of the FileIterator into a
 Summary
 -------
 
-The iterator protocol is a powerful tool that Python developers can leverage for efficient data processing. Both iterators and generators provide us with a set of unique means for cusomizing our solutions. Here, we've used both models to hook into the :code:`for` loop syntax of Python, allowing us to fluently process a high volume of data without having to worry about memory overload.
+The iterator protocol is a powerful tool that Python developers can leverage for efficient data processing. Both iterators and generators provide us with a set of unique means for customizing our solutions. Here, we've used both models to hook into the :code:`for` loop syntax of Python, allowing us to fluently process a high volume of data without having to worry about memory overload.
 
 |
 |
@@ -172,4 +172,4 @@ The iterator protocol is a powerful tool that Python developers can leverage for
 
 .. note::
 
-   *If you enjoyed this post, be sure to* `follow <https://www.linkedin.com/in/1mikegrn/>`_ *me on LinkedIn, where I'll be posting more content regularly. You can find previous content at my blog's webiste,* `1mikegrn.github.io/blog <https://1mikegrn.github.io/blog>`_
+   *If you enjoyed this post, be sure to* `follow <https://www.linkedin.com/in/1mikegrn/>`_ *me on LinkedIn, where I'll be posting more content regularly. You can find previous content at my blog's website,* `1mikegrn.github.io/blog <https://1mikegrn.github.io/blog>`_

@@ -135,4 +135,4 @@ Decorators provide Python with an elegant means of addressing this :code:`x=f(x)
 
 .. note::
 
-   *If you enjoyed this post, be sure to* `follow <https://www.linkedin.com/in/1mikegrn/>`_ *me on LinkedIn, where I'll be posting more content regularly. You can find previous content at my blog's webiste,* `1mikegrn.github.io/blog <https://1mikegrn.github.io/blog>`_
+   *If you enjoyed this post, be sure to* `follow <https://www.linkedin.com/in/1mikegrn/>`_ *me on LinkedIn, where I'll be posting more content regularly. You can find previous content at my blog's website,* `1mikegrn.github.io/blog <https://1mikegrn.github.io/blog>`_
