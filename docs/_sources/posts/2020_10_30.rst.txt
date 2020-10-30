@@ -157,7 +157,7 @@ With this new object, we've wrapped the functionality of the FileIterator into a
 .. code-block:: python
 
    with open(r'D:\Programming\ZZ_Sandbox\file_iterator\test.txt', 'w') as f:
-      for row in FileManager.from_directory(r'D:\Programming\ZZ_Sandbox\file_iterator', '.csv'):
+      for row in CSVcat.from_directory(r'D:\Programming\ZZ_Sandbox\file_iterator', '.csv'):
          f.write(row)
 
 Summary
