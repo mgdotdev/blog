@@ -1,19 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Posts by Michael Green &#8212; Home  documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
-    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/jquery.js"></script>
-    <script src="../../../_static/underscore.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="author" title="About these documents" href="../../../about/" />
     <link rel="index" title="Index" href="../../../genindex/" />
@@ -58,6 +57,71 @@
       
     </h1>
     
+    
+
+    <div class="section">
+      <h2><a href="../../../posts/2020_10_30/">Yielding Generators</a></h2>
+
+      <ul class="ablog-archive">
+      <li>
+      
+        30 October 2020
+      
+      </li>
+        
+
+  
+  <li id="author"><span>Author:</span>
+    
+      
+      <a href="#">Michael Green</a>
+      
+    </li>
+  
+
+  
+  <li id="location"><span>Location:</span>
+    
+      
+      <a href="../../location/california/">California</a>,
+      
+    
+      
+      <a href="../../location/united-states/">United States</a>
+      
+    </li>
+  
+
+  
+
+  
+  <li id="category"><span>Category:</span>
+    
+      
+      <a href="../../category/iterators/">Iterators</a>
+      
+    </li>
+  
+
+  
+  <li id="tags"><span>Tags:
+      </span>
+    
+      
+      <a href="../../tag/python/">Python</a>
+      
+    
+      
+      <a href="../../tag/generators/">Generators</a>
+      
+    </li>
+  
+  </ul>
+      <p>In our <a class="reference external" href="https://1mikegrn.github.io/blog/posts/2020_10_23/">previous</a> blog post, we spent some time discussing the iterator protocol and how we can build custom objects which hook into the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop syntax of the Python programming language. Today, we’re going to continue discussing iterators by looking into a specific sub-class of these objects, called <em>generators</em>. We’ll see how generators provide us convienience and flexibility when it comes to hooking into the iterator protocol.</p>
+
+      <p><a href="../../../posts/2020_10_30/">Read more ...</a></p>
+      <hr>
+    </div>
     
 
     <div class="section">
@@ -283,6 +347,8 @@
   <ul>
     
     
+      <li><a href="../../../posts/2020_10_30/">30 October - Yielding Generators</a></li>
+    
       <li><a href="../../../posts/2020_10_23/">23 October - Iterating right along…</a></li>
     
       <li><a href="../../../posts/2020_10_16/">16 October - Python’s “with” keyword - in context</a></li>
@@ -303,6 +369,11 @@
     li.ablog-cloud-5{font-size: 140%;}
   </style>
   <ul class="ablog-cloud">
+    
+      
+      <li class="ablog-cloud ablog-cloud-1">
+        <a href="../../tag/generators/">Generators</a></li>
+      
     
       
       <li class="ablog-cloud ablog-cloud-5">
@@ -338,7 +409,7 @@
     
   
     
-    <li><a href="../../category/iterators/">Iterators (1)</a></li>
+    <li><a href="../../category/iterators/">Iterators (2)</a></li>
     
   
   </ul>
@@ -347,7 +418,7 @@
   <ul>
   
     
-    <li><a href="../../2020/">2020 (3)</a></li>
+    <li><a href="../../2020/">2020 (4)</a></li>
     
   
   </ul>
@@ -361,7 +432,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -370,7 +441,7 @@
       &copy;2020, Michael Green.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

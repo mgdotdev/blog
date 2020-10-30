@@ -56,6 +56,14 @@ div.body {
     }
 }
 
+div.note {
+    background-color: #222;
+}
+
+div.admonition p.admonition-title {
+    font-family: 'Raleway';
+}
+
 div.footer {
     margin: 0px;
     padding: 0px;

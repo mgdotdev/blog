@@ -1,21 +1,21 @@
-.. post:: 31 Oct, 2020
+.. post:: 30 Oct, 2020
    :tags: Python, Generators
    :category: Iterators
    :author: Michael Green
    :location: California, United States
 
-=========================
-Generating more Iterators
-=========================
+===================
+Yielding Generators
+===================
 
 .. image:: ../images/generator.jpg
 
-In our `previous <https://1mikegrn.github.io/blog/posts/2020_10_23/>`_ blog post, we spent some time discussing the iterator protocol and how we can build custom objects which hook into the :code:`for` loop syntax of the Python programming language. Today, we're going to continue in discussing iterators by looking into a specific sub-class of iterators called *generators*.
+In our `previous <https://1mikegrn.github.io/blog/posts/2020_10_23/>`_ blog post, we spent some time discussing the iterator protocol and how we can build custom objects which hook into the :code:`for` loop syntax of the Python programming language. Today, we're going to continue discussing iterators by looking into a specific sub-class of these objects, called *generators*. We'll see how generators provide us convienience and flexibility when it comes to hooking into the iterator protocol. 
 
-:code:`yield` to generators
----------------------------
+Generators: :code:`__next__()` vs :code:`yield`
+-----------------------------------------------
 
-Like iterators, generators use the :code:`__next__()` protocol for iteratively yielding method and function results. The difference between the two objects however is in their construction. Instead of creating a :code:`__next__()` method in a class, we only need to call :code:`yield` in place of a typical :code:`return` call so to create a generator. This simplified syntax allows us to apply the iterator protocol to both class methods, and functions.
+Like iterators, generators use the iterator protocol for iteratively yielding method and function results. The difference between the two objects however is in their construction. Instead of creating a :code:`__next__()` method in a class, we only need to call :code:`yield` in place of a typical :code:`return` call so to create a generator. This simplified syntax allows us to apply the iterator protocol to both class methods and functions with a high degree of flexibility.
 
 As a simple example, let's go ahead and look at the :code:`CountByTwos` object we created last week and refactor it into a generator. To recap, our :code:`CountByTwos` object hooked into the iterator protocol by instantiating the methods :code:`__iter__()` and :code:`___next__()`.
 
@@ -54,7 +54,7 @@ With generators, we hook into this same protocol. However, the methods :code:`__
    In [2]: [x for x in count_by_twos(start=4, stop=24)]
    Out[2]: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
 
-As we can see, the generator function and the Iterator class object contain many of the same ideas. They're both instantiated, they both can be called via :code:`next(obj)`/:code:`obj.__next__()` and both iteratively return results to the user until a :code:`StopIteration` is encountered.
+As we can see, the generator function and the Iterator class object contain many of the same ideas. They're both instantiated, they both can be called via :code:`next(obj)`/:code:`obj.__next__()`, and they both iteratively return results to the user until a :code:`StopIteration` is encountered.
 
 .. code-block:: python
 
@@ -92,7 +92,7 @@ As we can see, the generator function and the Iterator class object contain many
 
    StopIteration:
 
-With generators, the :code:`StopIteration` is passed implicitly by finishing all :code:`yield` keywords. Once the generator executes all it's containing yield statements, a subsequent :code:`next()` call will return the :code:`StopIteration` and either error out or terminate the :code:`for` loop protocol.
+With generators, the :code:`StopIteration` can be passed implicitly by finishing all :code:`yield` statements. Once the generator executes all it's containing yield statements, a subsequent :code:`next()` call will return the :code:`StopIteration` and either error out or exit the :code:`for` loop protocol.
 
 .. code-block:: python
 
@@ -108,7 +108,7 @@ With generators, the :code:`StopIteration` is passed implicitly by finishing all
 Example: CSV concatenation (part 2)
 -----------------------------------
 
-As a core library developer, I'm always looking for ease-of-use optimizations that allow the tools I develop to be used as seemlessly as possible. From last week's blog, we created a set of objects that would allow a user to concatenate a set of CSV files into a single CSV file. The protocol for using these objects looked like the following, where we sucessively called each iterator in a nested for loop so to write the CSV contents line-by-line to the resulting file.
+As a core library developer, I'm always looking for ease-of-use optimizations that allow the tools I develop to be used as seemlessly as possible. From last week's blog, we created a set of objects that would allow a user to concatenate a set of CSV files into a single CSV file. The protocol for using these objects looked like the following, where we sucessively called each iterator within nested for loops so to write the CSV contents line-by-line to the resulting file.
 
 .. code-block:: python
 
@@ -119,7 +119,7 @@ As a core library developer, I'm always looking for ease-of-use optimizations th
          for row in file:
                f.write(row)
 
-Now, the result perfectly functional. However from a user experience perspective the interface is rather clunky - interacting with two objects in this explicit manner so to accomplish a single task in my opinion is undesireable. We can make use of the more flexible generator paradigm so to wrap the functionality of the :code:`FileIterator` into a method of the :code:`FileManager`.
+Now, the result here is perfectly functional. However, from a user experience perspective, the interface is rather clunky. Having to interact with two objects here in this explicit manner so to accomplish a single task in my opinion is undesirable. We can make use of the more flexible generator paradigm so to wrap the functionality of the :code:`FileIterator` into a class method of the File Manager.
 
 .. code-block:: python
 
@@ -152,7 +152,7 @@ Now, the result perfectly functional. However from a user experience perspective
       def from_directory(file_dir: str, ext: str) -> 'CSVcat':
          return CSVcat(glob.glob(os.path.join(file_dir, "**"+ext)))
 
-With this new object, we've wrapped the functionality of the FileIterator into a generator method. We're using the :code:`__init__()` method of the :code:`CSVcat` object to instantiate the generator method within the class instance, as well as extract the header information from one of the files. :code:`CSVcat.__next__()` calls the generator's :code:`__next__()` method, which iteratively calls the generator as :code:`CSVcat` is iterated over. With the added flexibility provided by the :code:`yield` keyword, we can fluently handle yielding the :code:`self.headers` row, as well yielding only the data rows as the list of files is iterated over. The result of this is that we can execute the entire protocol in a single for loop.
+With this new object, we've wrapped the functionality of the FileIterator into a generator method. We're using the :code:`__init__()` method of this new :code:`CSVcat` object to instantiate the generator method within the class instance, as well as extract the header information from one of the files. :code:`CSVcat.__next__()` calls the generator's :code:`__next__()` method, which iteratively calls the generator as :code:`CSVcat` is iterated over. With the added flexibility provided by the :code:`yield` keyword, we can fluently handle yielding the :code:`self.headers` row, as well yielding only the data rows as the list of files is iterated over. The result of this is that we can execute the entire protocol in a single for loop.
 
 .. code-block:: python
 
@@ -164,3 +164,12 @@ Summary
 -------
 
 The iterator protocol is a powerful tool that Python developers can leverage for efficient data processing. Both iterators and generators provide us with a set of unique means for cusomizing our solutions. Here, we've used both models to hook into the :code:`for` loop syntax of Python, allowing us to fluently process a high volume of data without having to worry about memory overload.
+
+|
+|
+|
+|
+
+.. note::
+
+   *If you enjoyed this post, be sure to* `follow <https://www.linkedin.com/in/1mikegrn/>`_ *me on LinkedIn, where I'll be posting more content regularly. You can find previous content at my blog's webiste,* `1mikegrn.github.io/blog <https://1mikegrn.github.io/blog>`_

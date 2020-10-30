@@ -173,3 +173,12 @@ Summary
 -------
 
 The iterator protocol provides Python developers with the ability to precisely control objects in sequence. By hooking into this iterator protocol using :code:`__iter__()` and :code:`__next__()`, we can create our own iterables with customized sequences. Here, we showed how to implement these :code:`__iter__()` and :code:`__next__()` methods within our own iterables, so to control how file data was read and written in a memory-efficient manner.
+
+|
+|
+|
+|
+
+.. note::
+
+   *If you enjoyed this post, be sure to* `follow <https://www.linkedin.com/in/1mikegrn/>`_ *me on LinkedIn, where I'll be posting more content regularly. You can find previous content at my blog's webiste,* `1mikegrn.github.io/blog <https://1mikegrn.github.io/blog>`_

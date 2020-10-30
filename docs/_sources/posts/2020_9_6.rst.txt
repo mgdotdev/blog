@@ -127,3 +127,12 @@ Summary
 -------
 
 Decorators provide Python with an elegant means of addressing this :code:`x=f(x)` design pattern. Leveraging their elegance in your library code provides you with the means to codify this pattern in a way that is clear, explicit, and controlled.
+
+|
+|
+|
+|
+
+.. note::
+
+   *If you enjoyed this post, be sure to* `follow <https://www.linkedin.com/in/1mikegrn/>`_ *me on LinkedIn, where I'll be posting more content regularly. You can find previous content at my blog's webiste,* `1mikegrn.github.io/blog <https://1mikegrn.github.io/blog>`_

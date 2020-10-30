@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
   <id>http://lernfunk.de/media/654321</id>
   <title>Michael's Blog</title>
-  <updated>2020-10-23T15:59:52.657105+00:00</updated>
+  <updated>2020-10-30T15:00:58.140139+00:00</updated>
   <link href="https://1mikegrn.github.io/blog"/>
   <link href="https://1mikegrn.github.io/blog/blog/atom.xml"/>
   <generator uri="https://ablog.readthedocs.org" version="0.10.11">ABlog</generator>
@@ -41,5 +41,17 @@
 </content>
     <link href="https://1mikegrn.github.io/blog/posts/2020_10_23/" rel="alternate"/>
     <published>2020-10-23T00:00:00-07:00</published>
+  </entry>
+  <entry>
+    <id>https://1mikegrn.github.io/blog/posts/2020_10_30/</id>
+    <title>Yielding Generators</title>
+    <updated>2020-10-30T00:00:00-07:00</updated>
+    <author>
+      <name>Michael Green</name>
+    </author>
+    <content type="html">&lt;p&gt;In our &lt;a class="reference external" href="https://1mikegrn.github.io/blog/posts/2020_10_23/"&gt;previous&lt;/a&gt; blog post, we spent some time discussing the iterator protocol and how we can build custom objects which hook into the &lt;code class="code docutils literal notranslate"&gt;&lt;span class="pre"&gt;for&lt;/span&gt;&lt;/code&gt; loop syntax of the Python programming language. Today, we’re going to continue discussing iterators by looking into a specific sub-class of these objects, called &lt;em&gt;generators&lt;/em&gt;. We’ll see how generators provide us convienience and flexibility when it comes to hooking into the iterator protocol.&lt;/p&gt;
+</content>
+    <link href="https://1mikegrn.github.io/blog/posts/2020_10_30/" rel="alternate"/>
+    <published>2020-10-30T00:00:00-07:00</published>
   </entry>
 </feed>

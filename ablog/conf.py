@@ -283,7 +283,7 @@ html_theme = 'alabaster'
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-html_favicon = '/home/michaelgrn/1mikegrn.github.io/images/favicon_io/favicon.ico'
+html_favicon = './images/favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -354,6 +354,6 @@ html_css_files = [
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'MichaelsBlogdoc'
 
-blog_post_pattern = "posts/*.rst"
+blog_post_pattern = ["posts/*.rst"]
 
 ablog_website = '../docs'

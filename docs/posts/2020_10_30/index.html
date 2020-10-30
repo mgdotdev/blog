@@ -1,0 +1,419 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Yielding Generators &#8212; Home  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../../about/" />
+    <link rel="index" title="Index" href="../../genindex/" />
+    <link rel="search" title="Search" href="../../search/" />
+  
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  
+  <link rel="alternate" type="application/atom+xml"  href="../../blog/atom.xml" title="Michael's Blog">
+  
+  
+  <style type="text/css">
+    ul.ablog-archive {list-style: none; overflow: auto; margin-left: 0px}
+    ul.ablog-archive li {float: left; margin-right: 5px; font-size: 80%}
+    ul.postlist a {font-style: italic;}
+    ul.postlist-style-disc {list-style-type: disc;}
+    ul.postlist-style-none {list-style-type: none;}
+    ul.postlist-style-circle {list-style-type: circle;}
+  </style>
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="yielding-generators">
+<h1>Yielding Generators<a class="headerlink" href="#yielding-generators" title="Permalink to this headline">¶</a></h1>
+<img alt="../../_images/generator.jpg" src="../../_images/generator.jpg" />
+<p>In our <a class="reference external" href="https://1mikegrn.github.io/blog/posts/2020_10_23/">previous</a> blog post, we spent some time discussing the iterator protocol and how we can build custom objects which hook into the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop syntax of the Python programming language. Today, we’re going to continue discussing iterators by looking into a specific sub-class of these objects, called <em>generators</em>. We’ll see how generators provide us convienience and flexibility when it comes to hooking into the iterator protocol.</p>
+<div class="section" id="generators-next-vs-yield">
+<h2>Generators: <code class="code docutils literal notranslate"><span class="pre">__next__()</span></code> vs <code class="code docutils literal notranslate"><span class="pre">yield</span></code><a class="headerlink" href="#generators-next-vs-yield" title="Permalink to this headline">¶</a></h2>
+<p>Like iterators, generators use the iterator protocol for iteratively yielding method and function results. The difference between the two objects however is in their construction. Instead of creating a <code class="code docutils literal notranslate"><span class="pre">__next__()</span></code> method in a class, we only need to call <code class="code docutils literal notranslate"><span class="pre">yield</span></code> in place of a typical <code class="code docutils literal notranslate"><span class="pre">return</span></code> call so to create a generator. This simplified syntax allows us to apply the iterator protocol to both class methods and functions with a high degree of flexibility.</p>
+<p>As a simple example, let’s go ahead and look at the <code class="code docutils literal notranslate"><span class="pre">CountByTwos</span></code> object we created last week and refactor it into a generator. To recap, our <code class="code docutils literal notranslate"><span class="pre">CountByTwos</span></code> object hooked into the iterator protocol by instantiating the methods <code class="code docutils literal notranslate"><span class="pre">__iter__()</span></code> and <code class="code docutils literal notranslate"><span class="pre">___next__()</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CountByTwos</span><span class="p">:</span>
+   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">internal_value</span> <span class="o">=</span> <span class="n">start</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="o">=</span> <span class="n">stop</span>
+
+   <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">return</span> <span class="bp">self</span>
+
+   <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="n">snapshot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">internal_value</span>
+      <span class="k">if</span> <span class="n">snapshot</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">internal_value</span> <span class="o">+=</span> <span class="mi">2</span>
+      <span class="k">return</span> <span class="n">snapshot</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">CountByTwos</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">24</span><span class="p">)]</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>With generators, we hook into this same protocol. However, the methods <code class="code docutils literal notranslate"><span class="pre">__iter__()</span></code> and <code class="code docutils literal notranslate"><span class="pre">___next__()</span></code> instead map to the generator’s instantiation and the keyword <code class="code docutils literal notranslate"><span class="pre">yield</span></code>. So as a generator function, we can refactor <code class="code docutils literal notranslate"><span class="pre">CountByTwos</span></code> to the following.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">count_by_twos</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
+   <span class="n">internal_value</span> <span class="o">=</span> <span class="n">start</span>
+   <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+      <span class="k">yield</span> <span class="n">internal_value</span>
+      <span class="n">internal_value</span> <span class="o">+=</span> <span class="mi">2</span>
+      <span class="k">if</span> <span class="n">internal_value</span> <span class="o">&gt;=</span> <span class="n">stop</span><span class="p">:</span>
+            <span class="k">return</span> <span class="ne">StopIteration</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">count_by_twos</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">24</span><span class="p">)]</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>As we can see, the generator function and the Iterator class object contain many of the same ideas. They’re both instantiated, they both can be called via <code class="code docutils literal notranslate"><span class="pre">next(obj)</span></code>/<code class="code docutils literal notranslate"><span class="pre">obj.__next__()</span></code>, and they both iteratively return results to the user until a <code class="code docutils literal notranslate"><span class="pre">StopIteration</span></code> is encountered.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="p">(</span>
+   <span class="n">CountByTwos</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="mi">8</span><span class="p">),</span>
+   <span class="n">count_by_twos</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="nb">next</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="nb">next</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">a</span><span class="o">.</span><span class="fm">__next__</span><span class="p">(),</span> <span class="n">b</span><span class="o">.</span><span class="fm">__next__</span><span class="p">()</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="nb">next</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="ne">StopIteration</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="mi">15841</span><span class="n">f3f11d4</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="o">----&gt;</span> <span class="mi">1</span> <span class="nb">next</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<span class="n">D</span><span class="p">:</span>\<span class="n">Programming</span>\<span class="n">ZZ_Sandbox</span>\<span class="n">file_iterator</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <span class="mi">146</span>         <span class="n">snapshot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">internal_value</span>
+    <span class="mi">147</span>         <span class="k">if</span> <span class="n">snapshot</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">:</span>
+<span class="o">--&gt;</span> <span class="mi">148</span>             <span class="k">raise</span> <span class="ne">StopIteration</span>
+    <span class="mi">149</span>         <span class="bp">self</span><span class="o">.</span><span class="n">internal_value</span> <span class="o">+=</span> <span class="mi">2</span>
+    <span class="mi">150</span>         <span class="k">return</span> <span class="n">snapshot</span>
+
+<span class="ne">StopIteration</span><span class="p">:</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="nb">next</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="ne">StopIteration</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">29</span><span class="o">-</span><span class="n">adb3e17b0219</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="o">----&gt;</span> <span class="mi">1</span> <span class="nb">next</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+<span class="ne">StopIteration</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>With generators, the <code class="code docutils literal notranslate"><span class="pre">StopIteration</span></code> can be passed implicitly by finishing all <code class="code docutils literal notranslate"><span class="pre">yield</span></code> statements. Once the generator executes all it’s containing yield statements, a subsequent <code class="code docutils literal notranslate"><span class="pre">next()</span></code> call will return the <code class="code docutils literal notranslate"><span class="pre">StopIteration</span></code> and either error out or exit the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop protocol.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">count_by_twos</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
+   <span class="n">internal_value</span> <span class="o">=</span> <span class="n">start</span>
+   <span class="k">while</span> <span class="n">internal_value</span> <span class="o">&lt;</span> <span class="n">stop</span><span class="p">:</span>
+      <span class="k">yield</span> <span class="n">internal_value</span>
+      <span class="n">internal_value</span> <span class="o">+=</span> <span class="mi">2</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">count_by_twos</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">24</span><span class="p">)]</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-csv-concatenation-part-2">
+<h2>Example: CSV concatenation (part 2)<a class="headerlink" href="#example-csv-concatenation-part-2" title="Permalink to this headline">¶</a></h2>
+<p>As a core library developer, I’m always looking for ease-of-use optimizations that allow the tools I develop to be used as seemlessly as possible. From last week’s blog, we created a set of objects that would allow a user to concatenate a set of CSV files into a single CSV file. The protocol for using these objects looked like the following, where we sucessively called each iterator within nested for loops so to write the CSV contents line-by-line to the resulting file.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;D:\Programming\ZZ_Sandbox\file_iterator\test.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+   <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">FileManager</span><span class="o">.</span><span class="n">from_directory</span><span class="p">(</span>
+      <span class="sa">r</span><span class="s1">&#39;D:\Programming\ZZ_Sandbox\file_iterator&#39;</span><span class="p">,</span> <span class="s1">&#39;.csv&#39;</span>
+   <span class="p">):</span>
+      <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, the result here is perfectly functional. However, from a user experience perspective, the interface is rather clunky. Having to interact with two objects here in this explicit manner so to accomplish a single task in my opinion is undesirable. We can make use of the more flexible generator paradigm so to wrap the functionality of the <code class="code docutils literal notranslate"><span class="pre">FileIterator</span></code> into a class method of the File Manager.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+
+
+<span class="k">class</span> <span class="nc">CSVcat</span><span class="p">:</span>
+   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="o">=</span> <span class="n">files</span>
+      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">file_generator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_generator</span><span class="p">()</span>
+
+   <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">return</span> <span class="bp">self</span>
+
+   <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_generator</span><span class="p">)</span>
+
+   <span class="k">def</span> <span class="nf">_file_generator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+      <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span>
+      <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+               <span class="k">yield</span> <span class="n">row</span>
+
+   <span class="nd">@staticmethod</span>
+   <span class="k">def</span> <span class="nf">from_directory</span><span class="p">(</span><span class="n">file_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ext</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;CSVcat&#39;</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">CSVcat</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_dir</span><span class="p">,</span> <span class="s2">&quot;**&quot;</span><span class="o">+</span><span class="n">ext</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>With this new object, we’ve wrapped the functionality of the FileIterator into a generator method. We’re using the <code class="code docutils literal notranslate"><span class="pre">__init__()</span></code> method of this new <code class="code docutils literal notranslate"><span class="pre">CSVcat</span></code> object to instantiate the generator method within the class instance, as well as extract the header information from one of the files. <code class="code docutils literal notranslate"><span class="pre">CSVcat.__next__()</span></code> calls the generator’s <code class="code docutils literal notranslate"><span class="pre">__next__()</span></code> method, which iteratively calls the generator as <code class="code docutils literal notranslate"><span class="pre">CSVcat</span></code> is iterated over. With the added flexibility provided by the <code class="code docutils literal notranslate"><span class="pre">yield</span></code> keyword, we can fluently handle yielding the <code class="code docutils literal notranslate"><span class="pre">self.headers</span></code> row, as well yielding only the data rows as the list of files is iterated over. The result of this is that we can execute the entire protocol in a single for loop.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;D:\Programming\ZZ_Sandbox\file_iterator\test.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+   <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">FileManager</span><span class="o">.</span><span class="n">from_directory</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;D:\Programming\ZZ_Sandbox\file_iterator&#39;</span><span class="p">,</span> <span class="s1">&#39;.csv&#39;</span><span class="p">):</span>
+      <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>The iterator protocol is a powerful tool that Python developers can leverage for efficient data processing. Both iterators and generators provide us with a set of unique means for cusomizing our solutions. Here, we’ve used both models to hook into the <code class="code docutils literal notranslate"><span class="pre">for</span></code> loop syntax of Python, allowing us to fluently process a high volume of data without having to worry about memory overload.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><em>If you enjoyed this post, be sure to</em> <a class="reference external" href="https://www.linkedin.com/in/1mikegrn/">follow</a> <em>me on LinkedIn, where I’ll be posting more content regularly. You can find previous content at my blog’s webiste,</em> <a class="reference external" href="https://1mikegrn.github.io/blog">1mikegrn.github.io/blog</a></p>
+</div>
+</div>
+</div>
+
+  <div class="section">
+  
+    
+
+
+<div class="section">
+  <span style="float: left;">
+  
+  Previous: 
+  <a href="../2020_10_23/">
+    
+    Iterating right along…
+  </a>
+  
+  </span>
+  <span>&nbsp;</span>
+  <span style="float: right;">
+  
+  </span>
+</div>
+
+  
+  
+  </div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../">Home</a></h1>
+
+
+
+
+
+
+
+
+
+  
+  
+  <h2>
+  
+  
+    30 October 2020
+  
+  </h2>
+
+  <ul>
+    
+
+  
+  <li id="author"><span>Author:</span>
+    
+      
+      <a href="../../blog/author/michael-green/">Michael Green</a>
+      
+    </li>
+  
+
+  
+  <li id="location"><span>Location:</span>
+    
+      
+      <a href="../../blog/location/california/">California</a>,
+      
+    
+      
+      <a href="../../blog/location/united-states/">United States</a>
+      
+    </li>
+  
+
+  
+
+  
+  <li id="category"><span>Category:</span>
+    
+      
+      <a href="../../blog/category/iterators/">Iterators</a>
+      
+    </li>
+  
+
+  
+  <li id="tags"><span>Tags:
+      </span>
+    
+      
+      <a href="../../blog/tag/python/">Python</a>
+      
+    
+      
+      <a href="../../blog/tag/generators/">Generators</a>
+      
+    </li>
+  
+  
+  </ul>
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://1mikegrn.github.io">1mikegrn.github.io</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://1mikegrn.github.io/blog/about">About</a></li>
+</ul>
+
+
+  <h3><a href="../../blog/">Recent Posts</a></h3>
+  <ul>
+    
+    
+      <li><a href="../2020_10_23/">23 October - Iterating right along…</a></li>
+    
+      <li><a href="../2020_10_16/">16 October - Python’s “with” keyword - in context</a></li>
+    
+      <li><a href="../2020_9_6/">06 September - In Python, decorators are where it’s @</a></li>
+    
+  </ul>
+
+  <h3><a href="../../blog/tag/">Tags</a></h3>
+  <style type="text/css">
+    ul.ablog-cloud {list-style: none; overflow: auto;}
+    ul.ablog-cloud li {float: left; height: 20pt; line-height: 18pt; margin-right: 5px;}
+    ul.ablog-cloud a {text-decoration: none; vertical-align: middle;}
+    li.ablog-cloud-1{font-size: 80%;}
+    li.ablog-cloud-2{font-size: 95%;}
+    li.ablog-cloud-3{font-size: 110%;}
+    li.ablog-cloud-4{font-size: 125%;}
+    li.ablog-cloud-5{font-size: 140%;}
+  </style>
+  <ul class="ablog-cloud">
+    
+      
+      <li class="ablog-cloud ablog-cloud-1">
+        <a href="../../blog/tag/generators/">Generators</a></li>
+      
+    
+      
+      <li class="ablog-cloud ablog-cloud-5">
+        <a href="../../blog/tag/python/">Python</a></li>
+      
+    
+      
+      <li class="ablog-cloud ablog-cloud-1">
+        <a href="../../blog/tag/context-managers/">context managers</a></li>
+      
+    
+      
+      <li class="ablog-cloud ablog-cloud-1">
+        <a href="../../blog/tag/decorators/">decorators</a></li>
+      
+    
+      
+      <li class="ablog-cloud ablog-cloud-1">
+        <a href="../../blog/tag/iterators/">iterators</a></li>
+      
+    
+  </ul>
+
+  <h3><a href="../../blog/category/">Categories</a></h3>
+  <ul>
+  
+    
+    <li><a href="../../blog/category/context-managers/">Context Managers (1)</a></li>
+    
+  
+    
+    <li><a href="../../blog/category/decorators/">Decorators (1)</a></li>
+    
+  
+    
+    <li><a href="../../blog/category/iterators/">Iterators (2)</a></li>
+    
+  
+  </ul>
+
+  <h3><a href="../../blog/archive/">Archives</a></h3>
+  <ul>
+  
+    
+    <li><a href="../../blog/2020/">2020 (4)</a></li>
+    
+  
+  </ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search/" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Michael Green.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/posts/2020_10_30.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
