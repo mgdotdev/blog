@@ -42,7 +42,7 @@ Nothing crazy. And if this was the problem we wanted to solve, it works fine.
 
 However if you were to stick this function into your Python interpreter you would notice that, as n increases, the execution time of this function gets longer and longer. For my computer it starts getting painful past n=40. Why is this?
 
-::
+.. code-block:: general
 
     In [1]: timeit.timeit(
             'fibonacci(40)', 
@@ -53,7 +53,7 @@ However if you were to stick this function into your Python interpreter you woul
 
 Well if we consider this recursive function for some term, say :code:`N=7`, and try to map out how this is being executed, it would look something like the following:
 
-::
+.. code-block:: general
 
     fibonacci(7)
 
@@ -112,7 +112,7 @@ This is the original protocol which we saw that decorators are for. So, instead 
 
 And now that we're caching intermediary values, our execution speed is significantly better.
 
-::
+.. code-block:: general
 
     In [2]: timeit.timeit(
                 'fibonacci(250)', 

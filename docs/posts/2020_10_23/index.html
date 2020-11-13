@@ -1,18 +1,19 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Iterating right along… &#8212; Home  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="author" title="About these documents" href="../../about/" />
     <link rel="index" title="Index" href="../../genindex/" />
@@ -98,8 +99,8 @@
 </div>
 <p>Consider the object above in the context of this iterator protocol. This <code class="code docutils literal notranslate"><span class="pre">CountByTwos</span></code> object sets an internal value to the start value. The <code class="code docutils literal notranslate"><span class="pre">__next__()</span></code> method takes a snapshot of this internal value, and raises <code class="code docutils literal notranslate"><span class="pre">StopIteration</span></code> if the snapshot is greater than or equal to the stop value. If it isn’t, we’ll increment the internal value by twos, and finally return the snapshot value.</p>
 <p>As we would suspect, Iterating over this <code class="code docutils literal notranslate"><span class="pre">CountByTwos</span></code> object results in a sequence of values between <code class="code docutils literal notranslate"><span class="pre">start</span></code> and <code class="code docutils literal notranslate"><span class="pre">stop</span></code> incremented by twos.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">CountByTwos</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="mi">24</span><span class="p">)]</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">]</span>
+<div class="highlight-general notranslate"><div class="highlight"><pre><span></span>In [1]: [x for x in CountByTwos(start=4,stop=24)]
+Out[1]: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
 </pre></div>
 </div>
 </div>
@@ -315,6 +316,8 @@
   <ul>
     
     
+      <li><a href="../2020_11_13/">13 November - Yielding Results, Yielding Control</a></li>
+    
       <li><a href="../2020_10_30/">30 October - Yielding Generators</a></li>
     
       <li><a href="../2020_10_16/">16 October - Python’s “with” keyword - in context</a></li>
@@ -337,7 +340,7 @@
   <ul class="ablog-cloud">
     
       
-      <li class="ablog-cloud ablog-cloud-1">
+      <li class="ablog-cloud ablog-cloud-2">
         <a href="../../blog/tag/generators/">Generators</a></li>
       
     
@@ -375,7 +378,7 @@
     
   
     
-    <li><a href="../../blog/category/iterators/">Iterators (2)</a></li>
+    <li><a href="../../blog/category/iterators/">Iterators (3)</a></li>
     
   
   </ul>
@@ -384,7 +387,7 @@
   <ul>
   
     
-    <li><a href="../../blog/2020/">2020 (4)</a></li>
+    <li><a href="../../blog/2020/">2020 (5)</a></li>
     
   
   </ul>
@@ -398,7 +401,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -407,7 +410,7 @@
       &copy;2020, Michael Green.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

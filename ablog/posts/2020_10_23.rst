@@ -75,7 +75,7 @@ Consider the object above in the context of this iterator protocol. This :code:`
 
 As we would suspect, Iterating over this :code:`CountByTwos` object results in a sequence of values between :code:`start` and :code:`stop` incremented by twos.
 
-.. code-block:: python
+.. code-block:: general
 
     In [1]: [x for x in CountByTwos(start=4,stop=24)]
     Out[1]: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22]

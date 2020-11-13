@@ -1,18 +1,19 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Python’s “with” keyword - in context &#8212; Home  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="author" title="About these documents" href="../../about/" />
     <link rel="index" title="Index" href="../../genindex/" />
@@ -65,12 +66,12 @@
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;in context&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[]:</span> <span class="n">python</span> <span class="o">-</span><span class="n">u</span> <span class="n">d</span><span class="p">:</span>\<span class="n">programming</span>\<span class="n">sandbox</span>\<span class="n">contextmanager</span><span class="o">.</span><span class="n">py</span>
-<span class="n">Out</span><span class="p">[]:</span>
+<div class="highlight-general notranslate"><div class="highlight"><pre><span></span>In []: python -u d:\programming\sandbox\contextmanager.py
+Out[]:
 
-<span class="n">entering</span><span class="o">...</span>
-<span class="ow">in</span> <span class="n">context</span>
-<span class="n">exiting</span><span class="o">...</span>
+entering...
+in context
+exiting...
 </pre></div>
 </div>
 <p>As a quick point, CM methods emulate the functionality of a <code class="code docutils literal notranslate"><span class="pre">try</span></code>/<code class="code docutils literal notranslate"><span class="pre">finally</span></code> block, where the <code class="code docutils literal notranslate"><span class="pre">__exit__()</span></code> is called regardless of the state of the block inside the context manager. The encompassed error will still ultimately be thrown, but the benefit here is that we get the exit protocol to execute no matter the success or failure of the encompassed code block.</p>
@@ -85,15 +86,15 @@
     <span class="k">raise</span> <span class="ne">ValueError</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[]:</span> <span class="n">python</span> <span class="o">-</span><span class="n">u</span> <span class="n">d</span><span class="p">:</span>\<span class="n">programming</span>\<span class="n">sandbox</span>\<span class="n">contextmanager</span><span class="o">.</span><span class="n">py</span>
-<span class="n">Out</span><span class="p">[]:</span>
+<div class="highlight-general notranslate"><div class="highlight"><pre><span></span>In []: python -u d:\programming\sandbox\contextmanager.py
+Out[]:
 
-<span class="n">entering</span><span class="o">...</span>
-<span class="n">exiting</span><span class="o">...</span>
-<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-<span class="n">File</span> <span class="s2">&quot;d:\programming\sandbox\contextmanager.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">9</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-    <span class="k">raise</span> <span class="ne">ValueError</span>
-<span class="ne">ValueError</span>
+entering...
+exiting...
+Traceback (most recent call last):
+File &quot;d:\programming\sandbox\contextmanager.py&quot;, line 9, in &lt;module&gt;
+    raise ValueError
+ValueError
 </pre></div>
 </div>
 <p>As I mentioned before, the most common examples of CMs come in the form of resource managers. Many resource-management objects in Python are by design context managers, built with the intent to abstract away from developers the need to incessantly call open, close, read, write, save, etc., over I/O resources that can be exclusively tethered to your Python instance during runtime. For example, <code class="code docutils literal notranslate"><span class="pre">open(path)</span></code> can be used as a CM, where in this case the CM handles the I/O setup and teardown protocols under the hood so that the developer doesn’t have to worry about resource management themselves.</p>
@@ -402,6 +403,8 @@
   <ul>
     
     
+      <li><a href="../2020_11_13/">13 November - Yielding Results, Yielding Control</a></li>
+    
       <li><a href="../2020_10_30/">30 October - Yielding Generators</a></li>
     
       <li><a href="../2020_10_23/">23 October - Iterating right along…</a></li>
@@ -424,7 +427,7 @@
   <ul class="ablog-cloud">
     
       
-      <li class="ablog-cloud ablog-cloud-1">
+      <li class="ablog-cloud ablog-cloud-2">
         <a href="../../blog/tag/generators/">Generators</a></li>
       
     
@@ -462,7 +465,7 @@
     
   
     
-    <li><a href="../../blog/category/iterators/">Iterators (2)</a></li>
+    <li><a href="../../blog/category/iterators/">Iterators (3)</a></li>
     
   
   </ul>
@@ -471,7 +474,7 @@
   <ul>
   
     
-    <li><a href="../../blog/2020/">2020 (4)</a></li>
+    <li><a href="../../blog/2020/">2020 (5)</a></li>
     
   
   </ul>
@@ -485,7 +488,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -494,7 +497,7 @@
       &copy;2020, Michael Green.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

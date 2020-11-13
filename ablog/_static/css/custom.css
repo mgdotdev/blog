@@ -167,6 +167,11 @@ div.sphinxsidebar h3 a {
     font-family: 'Raleway';
 }
 
+div.highlight-general div.highlight pre {
+    color:rgb(187,187,187);
+    font-size: 16px;
+}
+
 div.body h1, h1 {
     font-size: 45px;
 }
@@ -246,8 +251,12 @@ h2 > code > span.pre {
     color: rgb(216, 0, 216);
 }
 
-.highlight .nb, .highlight .ne, .highlight .nd {
+.highlight .nb, .highlight .ne {
     color: rgb(136, 134, 198);
+}
+
+.highlight .nd {
+    color: #BBA722;
 }
 
 .highlight .bp {

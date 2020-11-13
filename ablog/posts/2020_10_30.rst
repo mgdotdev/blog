@@ -36,6 +36,8 @@ As a simple example, let's go ahead and look at the :code:`CountByTwos` object w
          self.internal_value += 2
          return snapshot
 
+.. code-block:: general
+
    In [1]: [x for x in CountByTwos(start=4, stop=24)]
    Out[1]: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
 
@@ -51,12 +53,14 @@ With generators, we hook into this same protocol. However, the methods :code:`__
          if internal_value >= stop:
                return StopIteration
 
+.. code-block:: general
+
    In [2]: [x for x in count_by_twos(start=4, stop=24)]
    Out[2]: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
 
 As we can see, the generator function and the Iterator class object contain many of the same ideas. They're both instantiated, they both can be called via :code:`next(obj)`/:code:`obj.__next__()`, and they both iteratively return results to the user until a :code:`StopIteration` is encountered.
 
-.. code-block:: python
+.. code-block:: general
 
    In [3]: a, b = (
       CountByTwos(start=4,stop=8), 
@@ -101,6 +105,8 @@ With generators, the :code:`StopIteration` can be passed implicitly by finishing
       while internal_value < stop:
          yield internal_value
          internal_value += 2
+
+.. code-block:: general
 
    In [8]: [x for x in count_by_twos(start=4, stop=24)]
    Out[8]: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22]

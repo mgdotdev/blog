@@ -1,18 +1,19 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>In Python, decorators are where it’s @ &#8212; Home  documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="author" title="About these documents" href="../../about/" />
     <link rel="index" title="Index" href="../../genindex/" />
@@ -72,30 +73,30 @@
 </div>
 <p>Nothing crazy. And if this was the problem we wanted to solve, it works fine.</p>
 <p>However if you were to stick this function into your Python interpreter you would notice that, as n increases, the execution time of this function gets longer and longer. For my computer it starts getting painful past n=40. Why is this?</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">timeit</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span>
-        <span class="s1">&#39;fibonacci(40)&#39;</span><span class="p">,</span>
-        <span class="n">setup</span><span class="o">=</span><span class="s2">&quot;from __main__ import fibonacci&quot;</span><span class="p">,</span>
-        <span class="n">number</span><span class="o">=</span><span class="mi">4</span>
-    <span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="mf">131.346116</span>
+<div class="highlight-general notranslate"><div class="highlight"><pre><span></span>In [1]: timeit.timeit(
+        &#39;fibonacci(40)&#39;,
+        setup=&quot;from __main__ import fibonacci&quot;,
+        number=4
+    )
+Out[1]: 131.346116
 </pre></div>
 </div>
 <p>Well if we consider this recursive function for some term, say <code class="code docutils literal notranslate"><span class="pre">N=7</span></code>, and try to map out how this is being executed, it would look something like the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fibonacci</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<div class="highlight-general notranslate"><div class="highlight"><pre><span></span>fibonacci(7)
 
-<span class="n">fibonacci</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+fibonacci(6) + fibonacci(5)
 
-<span class="n">fibonacci</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+fibonacci(4) + fibonacci(5) + fibonacci(4) + fibonacci(3)
 
-<span class="n">fibonacci</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+fibonacci(3) + fibonacci(2) + fibonacci(4) + fibonacci(3) + fibonacci(3) + fibonacci(2) + fibonacci(2) + fibonacci(1)
 
-<span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+fibonacci(2) + fibonacci(1) + fibonacci(2) + fibonacci(3) + fibonacci(2) + fibonacci(2) + fibonacci(1) + fibonacci(2) + fibonacci(1) + fibonacci(2) + fibonacci(2) + fibonacci(1)
 
-<span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+fibonacci(2) + fibonacci(1) + fibonacci(2) + fibonacci(2) + fibonacci(1) + fibonacci(2) + fibonacci(2) + fibonacci(1) + fibonacci(2) + fibonacci(1) + fibonacci(2) + fibonacci(2) + fibonacci(1)
 
-<span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span>
+1+1+1+1+1+1+1+1+1+1+1+1+1
 
-<span class="mi">13</span>
+13
 </pre></div>
 </div>
 <p>We can see that our function is doing a lot of unpacking of smaller fibonacci terms, and because of this, we’re doing a lot of repeated work in this computation. Repeatedly calculating the results of these fibonacci sub trees is ultimately what is causing our computer to get bogged down at high values of n.</p>
@@ -129,12 +130,12 @@
 </pre></div>
 </div>
 <p>And now that we’re caching intermediary values, our execution speed is significantly better.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">timeit</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span>
-            <span class="s1">&#39;fibonacci(250)&#39;</span><span class="p">,</span>
-            <span class="n">setup</span><span class="o">=</span><span class="s2">&quot;from __main__ import fibonacci&quot;</span><span class="p">,</span>
-            <span class="n">number</span><span class="o">=</span><span class="mi">4</span>
-        <span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="mf">0.00094080</span>
+<div class="highlight-general notranslate"><div class="highlight"><pre><span></span>In [2]: timeit.timeit(
+            &#39;fibonacci(250)&#39;,
+            setup=&quot;from __main__ import fibonacci&quot;,
+            number=4
+        )
+Out[2]: 0.00094080
 </pre></div>
 </div>
 <p>To note: this notion of caching is so common in Python that there’s actually a core library object which does almost exactly what we’ve demonstrated herein. Next time you want to employ caching in your code, give functools.lru_cache a try from the functools module. And yes, it’s a decorator.</p>
@@ -267,6 +268,8 @@
   <ul>
     
     
+      <li><a href="../2020_11_13/">13 November - Yielding Results, Yielding Control</a></li>
+    
       <li><a href="../2020_10_30/">30 October - Yielding Generators</a></li>
     
       <li><a href="../2020_10_23/">23 October - Iterating right along…</a></li>
@@ -289,7 +292,7 @@
   <ul class="ablog-cloud">
     
       
-      <li class="ablog-cloud ablog-cloud-1">
+      <li class="ablog-cloud ablog-cloud-2">
         <a href="../../blog/tag/generators/">Generators</a></li>
       
     
@@ -327,7 +330,7 @@
     
   
     
-    <li><a href="../../blog/category/iterators/">Iterators (2)</a></li>
+    <li><a href="../../blog/category/iterators/">Iterators (3)</a></li>
     
   
   </ul>
@@ -336,7 +339,7 @@
   <ul>
   
     
-    <li><a href="../../blog/2020/">2020 (4)</a></li>
+    <li><a href="../../blog/2020/">2020 (5)</a></li>
     
   
   </ul>
@@ -350,7 +353,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -359,7 +362,7 @@
       &copy;2020, Michael Green.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

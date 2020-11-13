@@ -30,7 +30,7 @@ I'm choosing these words rather playfully, as the three elements which context m
     with ContextManager():
         print('in context')
 
-::
+.. code-block:: general
 
     In []: python -u d:\programming\sandbox\contextmanager.py
     Out[]:
@@ -53,7 +53,7 @@ As a quick point, CM methods emulate the functionality of a :code:`try`/:code:`f
     with ContextManager():
         raise ValueError
 
-::
+.. code-block:: general
 
     In []: python -u d:\programming\sandbox\contextmanager.py
     Out[]:
