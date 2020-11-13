@@ -14,11 +14,11 @@
 #         except StopIteration:
 #             pass
 
-@ContextManager
-def context_manager():
-    print('enter')
-    yield None
-    print('exit')
+# @ContextManager
+# def context_manager():
+#     print('enter')
+#     yield None
+#     print('exit')
 
 # if __name__ == "__main__":
 #     with context_manager() as c:
