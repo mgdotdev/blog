@@ -89,6 +89,8 @@ This is actually an exact mirror of the context manager protocol. So much so tha
     within generator
     exit generator
 
+The reason I wanted to go through this little exercise is because I think it demonstrates well this concept of yielding control. In this case, execution control is yielded within the scope of the :code:`with` block. Our :code:`@ContextManager` upon entering via :code:`__enter__()`, executes the generator, printing :code:`enter generator` and returning control once the :code:`yield` is reached. At this point, the generator returns control of execution back up the stack to the code within the :code:`with` block, which prints :code:`within generator`. Once the :code:`with` block is exited, the generator resumes control, printing :code:`exit generator` and returning :code:`StopIteration`, which allows the ContextManager to exit the protocol seamlessly. Using this :code:`@ContextManager` we see how control is passed up and down the stack between the generator and the end user.
+
 Example: Sequencing API calls
 -----------------------------
 
