@@ -56,7 +56,7 @@
 <div class="section" id="a-generator-as-a-context-manager">
 <h2>A generator as a context manager<a class="headerlink" href="#a-generator-as-a-context-manager" title="Permalink to this headline">¶</a></h2>
 <p>I think a clear way to demonstrate this concept of yielding control is in the context of context managers. In one our first blog posts, we demonstrated how we can create ContextManagers by hooking into the context management protocol of python with the <code class="code docutils literal notranslate"><span class="pre">__enter__()</span></code> and <code class="code docutils literal notranslate"><span class="pre">__exit__()</span></code> methods.</p>
-<p>Now, context managers have a more obvious scope for yielding control - one of their main uses is to automate the setup and teardown of <code class="code docutils literal notranslate"><span class="pre">I/O</span></code> resources around the scope of a <code class="code docutils literal notranslate"><span class="pre">with</span></code> statement.</p>
+<p>Now, context managers have a more obvious scope for yielding control - one of their main uses is to automate the setup and teardown of <code class="code docutils literal notranslate"><span class="pre">I/O</span></code> resources. When a context manager is used, the <code class="code docutils literal notranslate"><span class="pre">__enter__()</span></code> method is executed, and then control is returned to the user within the scope of a <code class="code docutils literal notranslate"><span class="pre">with</span></code> statement. Once the user’s code within the <code class="code docutils literal notranslate"><span class="pre">with</span></code> statement is finished executing, control is returned back to the context manager so it can execute its <code class="code docutils literal notranslate"><span class="pre">__exit__()</span></code> strategy.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ContextManager</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;enter ContextManager&#39;</span><span class="p">)</span>
@@ -160,15 +160,6 @@ exit generator
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">MockSession</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="fm">__next__</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">generator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">GET</span><span class="p">()</span>
-        <span class="k">yield</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">POST</span><span class="p">()</span>
-        <span class="k">yield</span>
-
     <span class="k">def</span> <span class="nf">GET</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;://&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
 
@@ -176,7 +167,7 @@ exit generator
         <span class="bp">self</span><span class="o">.</span><span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The benefit we’re deriving from this HTTPResponse object is that it allows us to interact with the progression of these API calls. We can do things like authentication, data conformation, etc. However as formulated, this response object has an inherent order that if not followed, will throw an error at runtime.</p>
+<p>The benefit we’re deriving from this HTTPResponse object is that it allows us to interact with the progression of these API calls. We can do things like authentication, data conformation, etc. However as formulated, this object API has an inherent order that, if not followed, will throw an error at runtime.</p>
 <div class="highlight-general notranslate"><div class="highlight"><pre><span></span>In [3]:
 conn = HTTPResponse(&quot;mock://fizz&quot;)
 conn.GET()

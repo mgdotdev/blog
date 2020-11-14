@@ -19,7 +19,7 @@ A generator as a context manager
 
 I think a clear way to demonstrate this concept of yielding control is in the context of context managers. In one our first blog posts, we demonstrated how we can create ContextManagers by hooking into the context management protocol of python with the :code:`__enter__()` and :code:`__exit__()` methods.
 
-Now, context managers have a more obvious scope for yielding control - one of their main uses is to automate the setup and teardown of :code:`I/O` resources around the scope of a :code:`with` statement.
+Now, context managers have a more obvious scope for yielding control - one of their main uses is to automate the setup and teardown of :code:`I/O` resources. When a context manager is used, the :code:`__enter__()` method is executed, and then control is returned to the user within the scope of a :code:`with` statement. Once the user's code within the :code:`with` statement is finished executing, control is returned back to the context manager so it can execute its :code:`__exit__()` strategy.
 
 .. code-block:: python
 
@@ -136,22 +136,13 @@ That being said, oftentimes these protocols need to be intertwined with other as
             self.session = MockSession()
             self.generator = self.generator()
 
-        def __next__(self):
-            self.generator.__next__()
-
-        def generator(self):
-            self.GET()
-            yield
-            self.POST()
-            yield
-
         def GET(self):
             self.resp = self.session.get(self.url, self.url.split("://")[1])
 
         def POST(self):
             self.resp = self.session.post(self.url, self.resp.text)
 
-The benefit we're deriving from this HTTPResponse object is that it allows us to interact with the progression of these API calls. We can do things like authentication, data conformation, etc. However as formulated, this response object has an inherent order that if not followed, will throw an error at runtime. 
+The benefit we're deriving from this HTTPResponse object is that it allows us to interact with the progression of these API calls. We can do things like authentication, data conformation, etc. However as formulated, this object API has an inherent order that, if not followed, will throw an error at runtime. 
 
 .. code-block:: general
 
