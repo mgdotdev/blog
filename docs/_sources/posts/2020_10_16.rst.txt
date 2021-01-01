@@ -256,7 +256,6 @@ The Python data model provides us developers with a powerful way to hook into so
 |
 |
 |
-|
 
 .. note::
 

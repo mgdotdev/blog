@@ -177,7 +177,6 @@ The iterator protocol provides Python developers with the ability to precisely c
 |
 |
 |
-|
 
 .. note::
 

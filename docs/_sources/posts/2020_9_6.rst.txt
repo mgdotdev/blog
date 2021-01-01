@@ -131,7 +131,6 @@ Decorators provide Python with an elegant means of addressing this :code:`x=f(x)
 |
 |
 |
-|
 
 .. note::
 
