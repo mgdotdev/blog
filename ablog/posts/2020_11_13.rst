@@ -231,7 +231,6 @@ Generators are a great tool for Python developers. Not only do they allow us to 
 |
 |
 |
-|
 
 .. note::
 

@@ -1,0 +1,14 @@
+pip it
+======
+
+The Python programming language occupies somewhat of a unique niche in the world of software engineering. More so than any other programming language available, there are 
+
+When it comes to the types of developers in the Python community, there's a 
+
+more so than other languages, 
+
+two distinct types of users of the language. On one hand you have the software engineering types, who use the language to build applications and other systems-like software products. Our (yes I would include myself in this category) understanding of the language is more vanilla in terms of the computer science discipline - 
+
+On the other hand, you have the Data Scientists, who unlike software engineers, use Python as a means to an end. 
+
+This article is 

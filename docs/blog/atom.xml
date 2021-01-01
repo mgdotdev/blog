@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
   <id>http://lernfunk.de/media/654321</id>
   <title>Michael's Blog</title>
-  <updated>2020-11-14T15:51:54.563005+00:00</updated>
+  <updated>2021-01-01T22:54:52.435904+00:00</updated>
   <link href="https://1mikegrn.github.io/blog"/>
   <link href="https://1mikegrn.github.io/blog/blog/atom.xml"/>
   <generator uri="https://ablog.readthedocs.org" version="0.10.11">ABlog</generator>
@@ -65,5 +65,17 @@
 </content>
     <link href="https://1mikegrn.github.io/blog/posts/2020_11_13/" rel="alternate"/>
     <published>2020-11-13T00:00:00-08:00</published>
+  </entry>
+  <entry>
+    <id>https://1mikegrn.github.io/blog/posts/2021_1_1/</id>
+    <title>Hello, 2021!</title>
+    <updated>2021-01-01T00:00:00-08:00</updated>
+    <author>
+      <name>Michael Green</name>
+    </author>
+    <content type="html">&lt;p&gt;Today is the first day of the new year! If you’re reading this, then congratulations for making it through 2020 together. That was quite the experience.&lt;/p&gt;
+</content>
+    <link href="https://1mikegrn.github.io/blog/posts/2021_1_1/" rel="alternate"/>
+    <published>2021-01-01T00:00:00-08:00</published>
   </entry>
 </feed>
